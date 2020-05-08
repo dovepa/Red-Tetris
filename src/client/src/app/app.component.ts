@@ -11,7 +11,10 @@ export class AppComponent implements OnInit {
   constructor(private socket: Socket) { }
 
   ngOnInit() {
-    this.socket.emit('hello');
+    this.socket.emit('userKnockRoomDoor', { name: 'dove' });
+    this.socket.on('userEnter', data => {
+      console.log('dove', data);
+    });
     console.log('hello');
   }
 }

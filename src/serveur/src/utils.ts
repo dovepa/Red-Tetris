@@ -3,15 +3,17 @@ const getRandomInt = (max: number): number => {
 };
 
 const log = (...args: any[]): any => {
-  // if (process.env.DEBUG === 'true')
-  // tslint:disable-next-line:no-console
-  console.log('[[ Red-Tetris API ]] :: ', args);
+  if (process.env.DEBUG === 'true') {
+    // tslint:disable-next-line:no-console
+    console.log('[[ Red-Tetris API ]] :: ', args);
+  }
 };
 
 const error = (...args: any[]): any => {
-  // if (process.env.DEBUG === 'true')
-  // tslint:disable-next-line:no-console
-  console.log('[[ Red-Tetris API ]] [[ ERROR ]] :: ', args);
+  if (process.env.DEBUG === 'true') {
+    // tslint:disable-next-line:no-console
+    console.log('[[ Red-Tetris API ]] [[ ERROR ]] :: ', args);
+  }
 };
 
 
