@@ -7,4 +7,5 @@ export interface Message {
 
 export interface Chat {
     message: Message[];
+    roomId: string;
 }

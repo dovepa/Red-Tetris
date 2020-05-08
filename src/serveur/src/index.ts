@@ -30,7 +30,8 @@ router.get('/api', async(ctx, next) => {
 
 // Middlewares
 app.use(json());
-app.use(logger());
+if (process.env.DEBUG === 'true')
+  app.use(logger());
 
 // Routes
 app.use(router.routes()).use(router.allowedMethods());
@@ -49,4 +50,5 @@ const io = new socket(server, {
   pingTimeout: 500000,
   cookie: false
 });
+socket.emit('eee');
 socketController(io);
