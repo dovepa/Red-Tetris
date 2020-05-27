@@ -1,0 +1,40 @@
+{
+  "name": "serveur",
+  "version": "1.0.0",
+  "description": "",
+  "main": "serveur.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "nodemon": "^2.0.3",
+    "socket.io": "^2.3.0",
+    "tslint": "^6.1.2",
+    "typescript": "^3.8.3",
+    "uniqid": "^5.2.0"
+  },
+  "devDependencies": {
+    "@types/node": "^13.13.5",
+    "ts-node": "^8.10.1"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node -r ts-node/register ./src/index.ts",
+    "dev:watch": "nodemon",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "nodemonConfig": {
+    "ignore": [
+      "**/*.test.ts",
+      "**/*.spec.ts",
+      ".git",
+      "node_modules"
+    ],
+    "watch": [
+      "src"
+    ],
+    "exec": "npm start",
+    "ext": "ts"
+  }
+}

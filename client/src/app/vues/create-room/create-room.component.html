@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-0 col-sm-1 col-md-2"></div>
+    <div class="col-12 col-sm-10 col-md-8 mt-5">
+        <div class="jumbotron container">
+            <h1 class="display-3">Create a new Room :</h1>
+            <div class="card border-primary centerDW" style="max-width: 70%">
+                <div class="card-header">
+                    <p class="lead centerH">To create a new room, please fill in the form below.</p>
+                </div>
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-4 centerH">
+                            Room Name :
+                        </div>
+                        <div class="col-8">
+                            <input type="text" [(ngModel)]="roomName" (ngModelChange)='verifRoomName()'
+                                class="form-control" placeholder="Name" pattern="[a-zA-Z ]*"
+                                [ngClass]="{'is-valid': status === 1, 'is-invalid' : status  > 1}" />
+                            <div *ngIf="status === 1" class="valid-feedback">Success! This name is free.</div>
+                            <div *ngIf="status === 2" class="invalid-feedback">Sorry, this name is already taken. Try
+                                another?</div>
+                            <div *ngIf="status === 3" class="invalid-feedback">Sorry, invalid room name.</div>
+                            <div *ngIf="status === 4" class="invalid-feedback">Sorry, max length 30 char.</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item">
+                    <div class="row">
+                        <div class="col-4 centerH">
+                            Room Mode :
+                        </div>
+                        <div class="col-8">
+
+                            <div class="btn-group btn-group-toggle" style="width: 100%" data-toggle="buttons">
+                                <label class="btn btn-primary" [ngClass]="{'active': mode === 'solo' }">
+                                    <input type="radio" value='solo' [(ngModel)]='mode' autocomplete="off">
+                                    Solo
+                                </label>
+                                <label class="btn btn-primary" [ngClass]="{'active': mode === 'multiplayer' }">
+                                    <input type="radio" value='multiplayer' [(ngModel)]='mode' autocomplete="off">
+                                    Multiplayer
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item" *ngIf="roomName.length > 0 && status === 1">
+                    <div class="row">
+                        <div class="col-12 centerW">
+                            <button type="button" class="btn btn-outline-success">Create</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

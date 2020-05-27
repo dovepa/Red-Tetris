@@ -1,0 +1,57 @@
+<div class="row">
+    <div class="col-0 col-sm-1 col-md-2"></div>
+    <div class="col-12 col-sm-10 col-md-8 mt-5">
+        <div class="jumbotron container">
+            <h1 class="display-3">Room List :</h1>
+            <div class="row">
+                <div class="col-8 centerH">
+                    <p class="lead ">Select a room for play, or create a new one.</p>
+                </div>
+                <div class="col-4">
+                    <a class="btn btn-info btn-lg float-right" routerLink='/createRoom' role="button">Create a New
+                        Room</a>
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="card border-primary">
+                        <div class="card-header">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-2 centerH">Room Name</div>
+                                    <div class="col-2 centerH">Master</div>
+                                    <div class="col-2 centerH">Mode</div>
+                                    <div class="col-2 centerH">Players</div>
+                                    <div class="col-4">
+                                        <input [(ngModel)]="search" [ngClass]="{'is-invalid' : error}"
+                                            (ngModelChange)='searchRoom()' type="text" class="form-control"
+                                            placeholder="Search Name..." />
+                                        <div *ngIf="error" class="invalid-feedback">Sorry, invalid room name.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div infinite-scroll (scrolled)="appendItems()" *ngIf="finalArray.length > 0">
+                            <div class="list-group-item" *ngFor="let room of finalArray">
+                                <div class="row m-0 p-0">
+                                    <div class="col-2 centerH">{{room}}</div>
+                                    <div class="col-2 centerH">{{room}}</div>
+                                    <div class="col-2 centerH">{{room}}</div>
+                                    <div class="col-2 centerH">{{room}}</div>
+                                    <div class="col-4"><button type="button" class="btn btn-success float-right">Join
+                                            the
+                                            room</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-group-item" *ngIf="finalArray.length === 0">
+                            Sorry, no results found - try a different search name...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

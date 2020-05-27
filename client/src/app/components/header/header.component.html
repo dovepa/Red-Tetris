@@ -1,0 +1,21 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <a class="navbar-brand" routerLink='/home' [ngClass]="{'active': activeVue === '/home'}">Red-Tetris</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
+        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item" [ngClass]="{'active': activeVue === '/room'}">
+                <a class="nav-link" routerLink='/room'>Room List</a>
+            </li>
+            <li class="nav-item" [ngClass]="{'active': activeVue === '/createRoom'}">
+                <a class="nav-link" routerLink='/createRoom'>Create Room</a>
+            </li>
+            <li class="nav-item" [ngClass]="{'active': activeVue === '/players'}">
+                <a class="nav-link" routerLink='/players'>Best Players</a>
+            </li>
+        </ul>
+    </div>
+</nav>
