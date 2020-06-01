@@ -9,27 +9,40 @@
                         <div class="card-header">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-4 centerH">Player Name</div>
-                                    <div class="col-4 centerH">Room Name</div>
-                                    <div class="col-4 centerH">Mode</div>
+                                    <div class="col-3 centerH">Player Name</div>
+                                    <div class="col-3 centerH">Room Name</div>
+                                    <div class="col-3 centerH">Date</div>
+                                    <div class="col-3">
+                                        <input maxlength="30" [(ngModel)]="search" [ngClass]="{'is-invalid' : error}"
+                                            (ngModelChange)='searchPlayer()' type="text" class="form-control"
+                                            placeholder="Search Name..." />
+                                        <div *ngIf="error" class="invalid-feedback">Sorry, invalid player name.
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                         <div infinite-scroll (scrolled)="appendItems()">
-                            <div class="list-group-item" *ngFor="let user of array">
+                            <div class="list-group-item" [ngClass]="{'gold': listPlayers.indexOf(player) === 0,
+                            'silver': listPlayers.indexOf(player) === 1,
+                            'bronze': listPlayers.indexOf(player) === 2}" *ngFor="let player of finalArray">
                                 <div class="row m-0 p-0">
-                                    <div class="col-4 centerH">Player Name</div>
-                                    <div class="col-4 centerH">Room Name</div>
-                                    <div class="col-4 centerH">Mode</div>
+                                    <div class="col-4 centerH">{{player?.name}} </div>
+                                    <div class="col-4 centerH">{{player?.roomId}}</div>
+                                    <div class="col-3 centerH">{{player?.scorindDate}}</div>
+                                    <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 0">🥇</div>
+                                    <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 1">🥈</div>
+                                    <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 2">🥉</div>
+                                    <div class="col-1 centerH centerW" *ngIf="listPlayers.indexOf(player) > 2">
+                                        {{listPlayers.indexOf(player)+1}}</div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="list-group-item" *ngIf="listPlayers.length === 0">
-                            Sorry, no results found...
+                            <div class="list-group-item" *ngIf="finalArray.length === 0">
+                                Sorry, no results found...
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-</div>

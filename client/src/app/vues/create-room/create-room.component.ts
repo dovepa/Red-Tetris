@@ -9,7 +9,7 @@ import { RoomService } from 'src/app/service/room.service';
 })
 export class CreateRoomComponent implements OnInit {
 
-  roomName: string;
+  roomName = '';
   mode: string;
   status: number;
 

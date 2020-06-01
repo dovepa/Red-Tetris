@@ -23,7 +23,7 @@
                                     <div class="col-2 centerH">Mode</div>
                                     <div class="col-2 centerH">Players</div>
                                     <div class="col-4">
-                                        <input [(ngModel)]="search" [ngClass]="{'is-invalid' : error}"
+                                        <input maxlength="30" [(ngModel)]="search" [ngClass]="{'is-invalid' : error}"
                                             (ngModelChange)='searchRoom()' type="text" class="form-control"
                                             placeholder="Search Name..." />
                                         <div *ngIf="error" class="invalid-feedback">Sorry, invalid room name.
@@ -35,10 +35,10 @@
                         <div infinite-scroll (scrolled)="appendItems()" *ngIf="finalArray.length > 0">
                             <div class="list-group-item" *ngFor="let room of finalArray">
                                 <div class="row m-0 p-0">
-                                    <div class="col-2 centerH">{{room}}</div>
-                                    <div class="col-2 centerH">{{room}}</div>
-                                    <div class="col-2 centerH">{{room}}</div>
-                                    <div class="col-2 centerH">{{room}}</div>
+                                    <div class="col-2 centerH">{{room?.roomName}}</div>
+                                    <div class="col-2 centerH">{{room?.master?.name}}</div>
+                                    <div class="col-2 centerH">{{room?.mode}}</div>
+                                    <div class="col-2 centerH">{{room?.players?.length}}</div>
                                     <div class="col-4"><button type="button" class="btn btn-success float-right">Join
                                             the
                                             room</button>

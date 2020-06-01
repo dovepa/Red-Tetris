@@ -2,14 +2,30 @@
 @import "~bootstrap/scss/bootstrap";
 @import "~bootswatch/dist/united/bootswatch";
 
+.medal {
+    font-size: 30px;
+}
+
+.gold {
+    background-color: #FCF1D8;
+}
+
+.silver {
+    background-color: #CECAC5;
+}
+
+.bronze {
+    background-color: #FBDDD2;
+}
+
 .centerW {
     display: block;
     text-align: center;
 }
 
 .centerDW {
-    margin-right: auto;
-    margin-left: auto;
+    margin-right: auto !important;
+    margin-left: auto !important;
 }
 
 

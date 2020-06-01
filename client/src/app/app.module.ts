@@ -16,6 +16,7 @@ import { CreateRoomComponent } from './vues/create-room/create-room.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
+import { TetrisGridComponent } from './components/tetris-grid/tetris-grid.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { RoomListComponent } from './vues/room-list/room-list.component';
     ToastComponent,
     NotificationComponent,
     RoomListComponent,
+    TetrisGridComponent,
   ],
   imports: [
     BrowserModule,

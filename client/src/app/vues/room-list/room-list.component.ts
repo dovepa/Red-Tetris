@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import * as utils from '../../utils';
+import { Room } from 'src/app/model/room.model';
+import { Player } from 'src/app/model/player.model';
 
 @Component({
   selector: 'app-room-list',
@@ -10,17 +12,17 @@ export class RoomListComponent implements OnInit {
 
   sum: number;
   search: string;
-  roomList: string[];
-  finalArray = [];
+  roomList: Room[];
+  finalArray: Room[] = [];
   error: boolean;
-  searchTmp: string[];
+  searchTmp: Room[];
 
   constructor() {
     this.error = false;
     this.roomList = [];
     let i = 0;
     while (i < 300) {
-      this.roomList.push('' + i);
+      this.roomList.push(new Room('' + i));
       i++;
     }
     this.searchTmp = this.roomList;
@@ -40,7 +42,7 @@ export class RoomListComponent implements OnInit {
       this.searchTmp = this.roomList;
     } else {
       this.roomList.forEach(room => {
-        if (room.includes(this.search)) {
+        if (room.roomName.includes(this.search)) {
           this.searchTmp.push(room);
         }
       });

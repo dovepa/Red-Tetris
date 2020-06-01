@@ -2,13 +2,13 @@
     <div class="col-0 col-sm-1 "></div>
     <div class="col-12 col-sm-10 mt-5">
         <div class="jumbotron container">
-            <h1 class="display-3">Tetris Game</h1>
+            <h1 class="display-3">Tetris Game :</h1>
             <div class="row mt-3">
-                <div class="col-8">
-
+                <div class="col-12 col-lg-8">
+                    <app-tetris-grid></app-tetris-grid>
                 </div>
-                <div class="col-4">
-                    <div class="row  mb-3">
+                <div class="col-12 col-lg-4">
+                    <div class="row  mb-3" *ngIf="me === room.master">
                         <div class="col-12">
                             <div class="btn-group btn-group-toggle" style="width: 100%" data-toggle="buttons">
                                 <label class="btn btn-primary active">
@@ -32,30 +32,15 @@
                                         <div class="col-6 centerW">Score</div>
                                     </div>
                                 </div>
-                                <div class="list-group-item">
+                                <div class="list-group-item" [ngClass]="{'silver': player === me}"
+                                    *ngFor="let player of playerList">
                                     <div class="row">
-                                        <div class="col-6 centerW">Name</div>
-                                        <div class="col-6 centerW">Score</div>
+                                        <div class="col-6 centerW" *ngIf="player !== me">{{player.name}}</div>
+                                        <div class="col-6 centerW" *ngIf="player === me">Me</div>
+                                        <div class="col-6 centerW">{{player.score}}</div>
                                     </div>
                                 </div>
-                                <div class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-6 centerW">Name</div>
-                                        <div class="col-6 centerW">Score</div>
-                                    </div>
-                                </div>
-                                <div class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-6 centerW">Name</div>
-                                        <div class="col-6 centerW">Score</div>
-                                    </div>
-                                </div>
-                                <div class="list-group-item">
-                                    <div class="row">
-                                        <div class="col-6 centerW">Name</div>
-                                        <div class="col-6 centerW">Score</div>
-                                    </div>
-                                </div>
+
                             </div>
                         </div>
                     </div>

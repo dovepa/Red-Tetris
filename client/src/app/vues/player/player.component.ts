@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import * as utils from '../../utils';
+import { Player } from 'src/app/model/player.model';
 
 @Component({
   selector: 'app-player',
@@ -8,10 +10,44 @@ import { Component, OnInit } from '@angular/core';
 export class PlayerComponent implements OnInit {
 
   sum: number;
-  listPlayers = [];
-  array = [];
+  listPlayers: Player[] = [];
+  arrayTmp: Player[] = [];
+  search: string;
+  finalArray: Player[] = [];
+  error: boolean;
 
-  constructor() { }
+  constructor() {
+    let i = 0;
+    while (i < 300) {
+      this.listPlayers.push(new Player('b' + i.toString(), 's' + i.toString()));
+      i++;
+    }
+    this.sum = 0;
+    this.arrayTmp = this.listPlayers;
+    this.appendItems();
+  }
+
+
+  searchPlayer() {
+    this.error = false;
+    if (utils.regex.test(this.search) === false) {
+      this.error = true;
+      return;
+    }
+    this.finalArray = [];
+    this.arrayTmp = [];
+    if (this.search.length === 0) {
+      this.arrayTmp = this.listPlayers;
+    } else {
+      this.listPlayers.forEach(player => {
+        if (player.name.includes(this.search) || player.roomId.includes(this.search)) {
+          this.arrayTmp.push(player);
+        }
+      });
+    }
+    this.sum = 0;
+    this.appendItems();
+  }
 
   ngOnInit(): void {
     this.sum = 0;
@@ -20,10 +56,10 @@ export class PlayerComponent implements OnInit {
 
   appendItems() {
     this.sum += 20;
-    const start = this.array.length.valueOf();
+    const start = this.finalArray.length.valueOf();
     for (let i = 0; i < this.sum; ++i) {
-      if (this.listPlayers[start + i] && this.array.includes(this.listPlayers[start + i]) === false) {
-        this.array.push(this.listPlayers[start + i]);
+      if (this.arrayTmp[start + i] && this.finalArray.includes(this.arrayTmp[start + i]) === false) {
+        this.finalArray.push(this.arrayTmp[start + i]);
       }
     }
   }

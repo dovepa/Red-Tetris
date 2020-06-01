@@ -13,7 +13,7 @@
                             Room Name :
                         </div>
                         <div class="col-8">
-                            <input type="text" [(ngModel)]="roomName" (ngModelChange)='verifRoomName()'
+                            <input maxlength="30" type="text" [(ngModel)]="roomName" (ngModelChange)='verifRoomName()'
                                 class="form-control" placeholder="Name" pattern="[a-zA-Z ]*"
                                 [ngClass]="{'is-valid': status === 1, 'is-invalid' : status  > 1}" />
                             <div *ngIf="status === 1" class="valid-feedback">Success! This name is free.</div>
