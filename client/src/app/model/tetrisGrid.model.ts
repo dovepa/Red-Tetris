@@ -1,7 +1,8 @@
 import { Player } from './player.model';
+import { TetroMino } from './tetromino.model';
 
 export class TetrisGrid {
-    grid: number[][];
+    shape: number[][];
     players: Player[];
     cols: number;
     rows: number;
@@ -9,10 +10,10 @@ export class TetrisGrid {
     constructor(cols: number, rows: number) {
         this.rows = rows;
         this.cols = cols;
-        this.grid = [];
+        this.shape = [];
         while (rows) {
             const line: number[] = new Array(cols).fill(0);
-            this.grid.push(line);
+            this.shape.push(line);
             rows--;
         }
     }
