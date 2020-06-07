@@ -11,6 +11,8 @@ const environmentDev = {
 let environmentSwitch;
 if (process.env.heroku) {
   environmentSwitch = environmentProd;
+} else {
+  environmentSwitch = environmentDev;
 }
 
 export const environment = environmentSwitch;
