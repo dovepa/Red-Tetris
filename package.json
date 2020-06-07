@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@angular/cli": "^9.1.7",
     "@types/node": "^14.0.11"
   }
 }
