@@ -25,7 +25,7 @@ export class TetrisService {
     });
   }
 
-  lastValidPlace(shape: number[][], sign: number, grid: TetrisGrid, positionX: number): number {
+  lastYValidPlace(shape: number[][], sign: number, grid: TetrisGrid, positionX: number): number {
     let ymax = 0;
     while (this.isValidPlace(shape, sign, grid, positionX, ymax + 1)) {
       ymax++;
@@ -66,7 +66,7 @@ export class TetrisService {
   }
 
   draw(grid: TetrisGrid, tetro: TetroMino, final?: boolean): void {
-    tetro.position.ymax = this.lastValidPlace(tetro.shape, tetro.sign, grid, tetro.position.x);
+    tetro.position.ymax = this.lastYValidPlace(tetro.shape, tetro.sign, grid, tetro.position.x);
     // ghost
     if (final === undefined && tetro.position.ymax > tetro.position.y) {
       grid.shape.forEach((rows, indexY) => {
@@ -98,6 +98,7 @@ export class TetrisService {
         }
       });
     });
+    console.log(grid.shape);
   }
 
   erase(grid: TetrisGrid, tetro: TetroMino) {

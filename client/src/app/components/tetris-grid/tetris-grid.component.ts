@@ -3,6 +3,7 @@ import { TetrisGrid } from 'src/app/model/tetrisGrid.model';
 import { TetroMino } from 'src/app/model/tetromino.model';
 import * as utils from '../../utils';
 import { TetrisService } from 'src/app/service/tetris.service';
+import { Room } from 'src/app/model/room.model';
 
 @Component({
   selector: 'app-tetris-grid',
@@ -23,8 +24,21 @@ export class TetrisGridComponent implements OnInit {
       else { this.tetrominoList.push(tetro); }
       i++;
     }
-    this.tetrisService.draw(this.grid, this.current);
+    this.room = new Room('aaa');
+    this.room.master = 's';
+    this.me = 's';
+
+    if (this.tetrisService.isValidPlace(
+      this.current.shape,
+      this.current.sign,
+      this.grid,
+      this.current.position.x, this.current.position.y)) {
+      this.tetrisService.draw(this.grid, this.current);
+    }
   }
+
+  room;
+  me;
 
   tetrominoList: TetroMino[];
   grid: TetrisGrid;
@@ -53,7 +67,6 @@ export class TetrisGridComponent implements OnInit {
   }
 
   move(where: string) {
-
     switch (where) {
       case 'up':
         this.tetrisService.erase(this.grid, this.current);
@@ -109,7 +122,6 @@ export class TetrisGridComponent implements OnInit {
       default:
         return;
     }
-
   }
 
 }

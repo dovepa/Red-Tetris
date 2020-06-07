@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-12 col-md-3">
-            <div class="card text-white bg-success mb-3" style="width: 140px" *ngIf="current">
+            <div class="d-none d-md-block card text-white bg-success mb-3" style="min-width: 140px" *ngIf="current">
                 <div class="card-header">Current :</div>
                 <div class="centerDW card border-success m-2 " [ngStyle]="{'width' : (current.matrix * 30 + 2) +'px',
                         'height' : (current.matrix * 30 + 2) +'px'}">
@@ -11,13 +11,16 @@
                 </div>
             </div>
 
-            <div class="card text-white bg-info mb-3" style="width: 140px">
+            <div class="card text-white bg-info mb-3" style="min-width: 140px">
                 <div class="card-header">Next :</div>
-                <div *ngFor="let tetromino of tetrominoList">
-                    <div class="centerDW card border-success m-2 " [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
+                <div class="row">
+                    <div class="col-4  col-md-12  " *ngFor="let tetromino of tetrominoList">
+                        <div class="card border-success m-2 centerDW" [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
                         'height' : (tetromino.matrix * 30 + 2) +'px'}">
-                        <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
-                            <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows">
+                            <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
+                                <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}"
+                                    *ngFor="let cube of rows">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -25,16 +28,30 @@
             </div>
         </div>
         <div class="col-12 col-md-6">
-            <div class="card border-success mb-3" *ngIf="grid" style="width: 302px;">
+            <div class="card border-success mb-3 centerDW" *ngIf="grid" style="width: 302px;">
                 <div class="container-fluid p-0 m-0">
                     <div class="row p-0 m-0" *ngFor="let rows of grid.shape">
-                        <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows"></div>
+                        <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}"
+                            *ngFor="let cube of rows; let i = index"></div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-3 type1">
-
+        <div class="col-12 col-md-3">
+            <div class="row  mb-3" *ngIf="me === room.master">
+                <div class="col-12">
+                    <div class="btn-group btn-group-toggle" style="width: 100%" data-toggle="buttons">
+                        <label class="btn btn-primary active">
+                            <input type="radio" value='solo' autocomplete="off">
+                            Solo
+                        </label>
+                        <label class="btn btn-primary">
+                            <input type="radio" value='multiplayer' autocomplete="off">
+                            Multiplayer
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
