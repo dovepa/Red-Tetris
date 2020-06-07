@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import * as utils from '../../utils';
 import { Room } from 'src/app/model/room.model';
 import { Player } from 'src/app/model/player.model';
+import { RoomService } from 'src/app/service/room.service';
 
 @Component({
   selector: 'app-room-list',
@@ -17,17 +18,19 @@ export class RoomListComponent implements OnInit {
   error: boolean;
   searchTmp: Room[];
 
-  constructor() {
+  constructor(private readonly roomService: RoomService) {
     this.error = false;
     this.roomList = [];
-    let i = 0;
-    while (i < 300) {
-      this.roomList.push(new Room('' + i));
-      i++;
-    }
+
+    this.getRooms();
     this.searchTmp = this.roomList;
     this.sum = 0;
     this.appendItems();
+  }
+
+  async getRooms() {
+    this.roomList = await this.roomService.getAllRooms();
+    this.searchRoom();
   }
 
   searchRoom() {
@@ -38,7 +41,7 @@ export class RoomListComponent implements OnInit {
     }
     this.finalArray = [];
     this.searchTmp = [];
-    if (this.search.length === 0) {
+    if (!this.search || this.search.length === 0) {
       this.searchTmp = this.roomList;
     } else {
       this.roomList.forEach(room => {

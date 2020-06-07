@@ -17,6 +17,7 @@ import { ToastComponent } from './components/toast/toast.component';
 import { NotificationComponent } from './components/notification/notification.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
 import { TetrisGridComponent } from './components/tetris-grid/tetris-grid.component';
+import { ModePipe } from './pipes/mode.pipe';
 
 @NgModule({
   declarations: [
@@ -31,13 +32,14 @@ import { TetrisGridComponent } from './components/tetris-grid/tetris-grid.compon
     NotificationComponent,
     RoomListComponent,
     TetrisGridComponent,
+    ModePipe,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
-    InfiniteScrollModule
+    InfiniteScrollModule,
   ],
   providers: [{ provide: UrlSerializer, useClass: CustomUrlSerializer }],
   bootstrap: [AppComponent]

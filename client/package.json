@@ -21,6 +21,8 @@
     "@angular/router": "~9.1.4",
     "@ng-bootstrap/ng-bootstrap": "^6.1.0",
     "@ng-select/ng-select": "^4.0.0",
+    "@types/axios": "^0.14.0",
+    "axios": "^0.19.2",
     "bootstrap": "^4.5.0",
     "bootswatch": "^4.5.0",
     "ngx-infinite-scroll": "^9.0.0",

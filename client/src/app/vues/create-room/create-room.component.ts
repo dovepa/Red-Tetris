@@ -12,26 +12,39 @@ export class CreateRoomComponent implements OnInit {
   roomName = '';
   mode: string;
   status: number;
+  timerEvent: NodeJS.Timer;
 
   constructor(private readonly roomService: RoomService) {
     this.status = 0;
     this.mode = 'multiplayer';
   }
 
-  verifRoomName() {
+  time() {
+    clearTimeout(this.timerEvent);
+    this.timerEvent = setTimeout(() => {
+
+    }, 800);
+  }
+
+
+  async verifRoomName() {
     this.status = 0;
+    clearTimeout(this.timerEvent);
     if (this.roomName.length < 1) {
     } else if (this.roomName.length > 30) {
       this.status = 4;
     } else if (utils.regex.test(this.roomName) === false) {
       this.status = 3;
     } else {
-      if (this.roomService.testIfRoomNameIsFree(this.roomName)) {
-        this.status = 1;
-      }
-      else {
-        this.status = 2;
-      }
+      this.timerEvent = setTimeout(async () => {
+        const isFree = await this.roomService.testIfRoomNameIsFree(this.roomName);
+        if (isFree) {
+          this.status = 1;
+        }
+        else {
+          this.status = 2;
+        }
+      }, 600);
     }
   }
 

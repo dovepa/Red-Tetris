@@ -4,5 +4,7 @@
 
 export const environment = {
   production: false,
+  serverPort: 3002,
+  serverAdress: 'http://localhost:',
   log: true
 };
