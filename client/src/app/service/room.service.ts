@@ -19,11 +19,6 @@ export class RoomService {
     return status;
   }
 
-  createRoom(room) {
-
-    return;
-  }
-
   async getAllRooms(): Promise<Room[]> {
     let list: Room[] = [];
     await axios.get(utils.apiUrl('room', 'getAll'))
@@ -35,5 +30,19 @@ export class RoomService {
     return list;
   }
 
+  createRoom(room) {
 
+    return;
+  }
+
+
+
+  async getRoom(id: string): Promise<Room> {
+    let room: Room;
+    await axios.post(utils.apiUrl('room', 'getRoom'), { id })
+      .then((res) => {
+        room = res.data;
+      });
+    return room;
+  }
 }

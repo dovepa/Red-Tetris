@@ -22,8 +22,6 @@ export class CreateRoomComponent implements OnInit {
     this.mode = 'multiplayer';
   }
 
-
-
   async verifPlayerName() {
     this.playerNameStatus = 0;
     if (this.playerName.length <= 0) {
@@ -36,7 +34,6 @@ export class CreateRoomComponent implements OnInit {
       this.playerNameStatus = 1;
     }
   }
-
 
   async verifRoomName() {
     this.roomNameStatus = 0;
@@ -58,6 +55,10 @@ export class CreateRoomComponent implements OnInit {
         }
       }, 600);
     }
+  }
+
+  createRoom() {
+
   }
 
   ngOnInit(): void {

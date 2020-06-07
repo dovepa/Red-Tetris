@@ -16,7 +16,6 @@ export class HeaderComponent implements OnInit {
               private readonly roomService: RoomService) {
     this.router.events.subscribe((event) => {
       this.activeVue = this.router.url;
-      utils.log('route changed', this.activeVue);
     });
   }
 

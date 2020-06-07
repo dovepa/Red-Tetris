@@ -14,6 +14,17 @@ export const testIfRoomNameIsFree = async(req, res) => {
     res.status(200).json(status);
 };
 
+export const getRoom = async(req, res) => {
+    const id = req.body;
+    if (!id)
+        res.status(400).json({ error: 'Bad Request.' });
+    roomList.forEach(room => {
+        if (room.roomId === id)
+            return res.status(200).json(room);
+    });
+    res.status(409).json({ error: 'Room not found.' });
+};
+
 export const createRoom = async(req, res) => {
     const room = req.body.room;
     if (!room || !room.roomName || !room.mode)

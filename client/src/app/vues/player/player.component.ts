@@ -17,11 +17,6 @@ export class PlayerComponent implements OnInit {
   error: boolean;
 
   constructor() {
-    let i = 0;
-    while (i < 300) {
-      this.listPlayers.push(new Player('b' + i.toString(), 's' + i.toString()));
-      i++;
-    }
     this.sum = 0;
     this.arrayTmp = this.listPlayers;
     this.appendItems();

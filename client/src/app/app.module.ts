@@ -14,7 +14,6 @@ import { HeaderComponent } from './components/header/header.component';
 import { ChatComponent } from './components/chat/chat.component';
 import { CreateRoomComponent } from './vues/create-room/create-room.component';
 import { ToastComponent } from './components/toast/toast.component';
-import { NotificationComponent } from './components/notification/notification.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
 import { TetrisGridComponent } from './components/tetris-grid/tetris-grid.component';
 import { ModePipe } from './pipes/mode.pipe';
@@ -29,7 +28,6 @@ import { ModePipe } from './pipes/mode.pipe';
     ChatComponent,
     CreateRoomComponent,
     ToastComponent,
-    NotificationComponent,
     RoomListComponent,
     TetrisGridComponent,
     ModePipe,

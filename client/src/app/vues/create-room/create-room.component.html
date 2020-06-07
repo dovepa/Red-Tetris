@@ -37,7 +37,7 @@
                             <div *ngIf="roomNameStatus === 2" class="invalid-feedback">Sorry, this name is already
                                 taken. Try
                                 another?</div>
-                            <div *ngIf="roomNameStatus === 3" class="invalid-feedback">Sorry, invalid room name.</div>
+                            <div *ngIf="roomNameStatus === 3" class="invalid-feedback">Sorry, invalid player name.</div>
                             <div *ngIf="roomNameStatus === 4" class="invalid-feedback">Sorry, max length 30 char.</div>
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                     *ngIf="roomName.length > 0 && roomNameStatus === 1 && playerName.length > 0 && playerNameStatus === 1">
                     <div class="row">
                         <div class="col-12 centerW">
-                            <button type="button" class="btn btn-outline-success">Create</button>
+                            <button type="button" class="btn btn-outline-success" (click)="createRoom()">Create</button>
                         </div>
                     </div>
                 </div>

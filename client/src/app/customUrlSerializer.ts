@@ -9,7 +9,6 @@ export class CustomUrlSerializer implements UrlSerializer {
         if (urlString.startsWith('#')) {
             urlString = urlString.replace('#', hashKey);
         }
-        // utils.log('Url', urlString);
         return dus.parse(urlString);
     }
 
@@ -19,7 +18,6 @@ export class CustomUrlSerializer implements UrlSerializer {
         path = path.replace(/%5B/g, '[');
         path = path.replace(/%5D/g, ']');
         path = path.replace(hashKey, '#');
-        // utils.log('Tree', path);
         return path;
     }
 }
