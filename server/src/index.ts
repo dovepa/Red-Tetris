@@ -10,7 +10,7 @@ import tetrisRoute from './routes/tetris';
 import roomRoute from './routes/room';
 import { environment } from './environments/environment';
 
-const port = environment.serverPort || 3002;
+const port = process.env.PORT || environment.serverPort || 3002;
 const app = express();
 const server = http.createServer(app);
 
@@ -21,8 +21,8 @@ export const io = socket(server, {
 socketController(io);
 
 const whitelist = [
-    `http://localhost:${environment.clientPort}`,
-    `http://localhost:${environment.serverPort}`
+    `http://localhost:${process.env.PORT || environment.clientPort}`,
+    `http://localhost:${process.env.PORT || environment.serverPort}`
 ];
 const corsOptions = {
     origin(origin, callback) {
