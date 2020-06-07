@@ -1,6 +1,9 @@
 {
   "version": "2.0.2",
   "compilerOptions": {
+    "types": [
+      "node"
+    ],
     "outDir": "./dist",
     "lib": [
       "es6"
