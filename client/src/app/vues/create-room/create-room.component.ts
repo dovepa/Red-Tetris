@@ -9,40 +9,52 @@ import { RoomService } from 'src/app/service/room.service';
 })
 export class CreateRoomComponent implements OnInit {
 
-  roomName = '';
   mode: string;
-  status: number;
-  timerEvent: NodeJS.Timer;
+  playerName = '';
+  playerNameStatus: number;
+  roomName = '';
+  roomNameStatus: number;
+  timerEvent: number | undefined;
 
   constructor(private readonly roomService: RoomService) {
-    this.status = 0;
+    this.roomNameStatus = 0;
+    this.playerNameStatus = 0;
     this.mode = 'multiplayer';
   }
 
-  time() {
-    clearTimeout(this.timerEvent);
-    this.timerEvent = setTimeout(() => {
 
-    }, 800);
+
+  async verifPlayerName() {
+    this.playerNameStatus = 0;
+    if (this.playerName.length <= 0) {
+      this.playerNameStatus = 0;
+    } else if (this.playerName.length > 30) {
+      this.playerNameStatus = 4;
+    } else if (utils.regex.test(this.playerName) === false) {
+      this.playerNameStatus = 3;
+    } else {
+      this.playerNameStatus = 1;
+    }
   }
 
 
   async verifRoomName() {
-    this.status = 0;
-    clearTimeout(this.timerEvent);
-    if (this.roomName.length < 1) {
+    this.roomNameStatus = 0;
+    window.clearTimeout(this.timerEvent);
+    if (this.roomName.length <= 0) {
+      this.roomNameStatus = 0;
     } else if (this.roomName.length > 30) {
-      this.status = 4;
+      this.roomNameStatus = 4;
     } else if (utils.regex.test(this.roomName) === false) {
-      this.status = 3;
+      this.roomNameStatus = 3;
     } else {
-      this.timerEvent = setTimeout(async () => {
+      this.timerEvent = window.setTimeout(async () => {
         const isFree = await this.roomService.testIfRoomNameIsFree(this.roomName);
         if (isFree) {
-          this.status = 1;
+          this.roomNameStatus = 1;
         }
         else {
-          this.status = 2;
+          this.roomNameStatus = 2;
         }
       }, 600);
     }
