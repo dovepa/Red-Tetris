@@ -24,7 +24,7 @@ export class TetrisGridComponent implements OnInit {
       else { this.tetrominoList.push(tetro); }
       i++;
     }
-    this.room = new Room('aaa');
+    this.room = new Room('aaa', 0);
     this.room.master = 's';
     this.me = 's';
 
