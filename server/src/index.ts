@@ -26,7 +26,7 @@ const whitelist = [
 ];
 const corsOptions = {
     origin(origin, callback) {
-        if (!environment.production || origin === undefined) {
+        if (environment.production || origin === undefined) {
             callback(null, true);
         } else if (whitelist.indexOf(origin) !== -1) {
             callback(null, true);
