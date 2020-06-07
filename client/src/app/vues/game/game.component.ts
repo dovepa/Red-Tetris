@@ -21,7 +21,7 @@ export class GameComponent implements OnInit {
       this.playerList.push(player);
       i++;
     }
-    this.room = new Room('aaa');
+    this.room = new Room('aaa', 0);
     this.room.master = this.playerList[4];
     this.me = this.playerList[4];
 

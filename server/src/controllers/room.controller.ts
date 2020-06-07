@@ -3,9 +3,6 @@ import { Room } from '../models/room.model';
 const roomList: Room[] = [];
 
 export const getAllRooms = async(req, res) => {
-    roomList.push(new Room('ssss', 0));
-    roomList.push(new Room('aaa', 0));
-    roomList.push(new Room('bbb', 1));
     res.status(200).json(roomList);
 };
 
@@ -18,5 +15,13 @@ export const testIfRoomNameIsFree = async(req, res) => {
 };
 
 export const createRoom = async(req, res) => {
-    res.status(200).json(roomList);
+    const room = req.body.room;
+    if (!room || !room.roomName || !room.mode)
+        res.status(400).json({ error: 'Bad Request.' });
+    else if (!roomList.every((r) => { return r.roomName !== room.roomName; }))
+        res.status(409).json({ error: 'Sorry, this name is already taken. Try another ?' });
+    else {
+        roomList.push(new Room(room.roomName, room.mode));
+        res.status(200).json({ success: true });
+    }
 };
