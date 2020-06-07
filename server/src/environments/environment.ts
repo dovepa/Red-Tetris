@@ -4,7 +4,13 @@ const environmentDev = {
   clientPort: 4200,
   serverPort: 3002,
   production: true,
+  online: false,
   log: true
 };
 
-export const environment = environmentDev;
+let environmentSwitch;
+if (process.env.heroku) {
+  environmentSwitch = environmentProd;
+}
+
+export const environment = environmentSwitch;

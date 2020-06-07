@@ -1,3 +1,7 @@
 export const environment = {
-  production: true
+  clientPort: process.env.PORT || 4200,
+  serverPort: process.env.PORT || 3002,
+  production: true,
+  online: true,
+  log: true
 };
