@@ -3,7 +3,7 @@ import { environment } from '../environments/environment';
 export const regex = RegExp(/^[a-zA-Z0-9]*$/);
 
 export const apiUrl = (...args: string[]): string => {
-    let url = environment.serverAdress + environment.serverPort + '/api';
+    let url = environment.serverAdress + '/api';
     args.forEach(path => {
         url = url.concat('/' + path);
     });
