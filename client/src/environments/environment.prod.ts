@@ -1,6 +1,6 @@
-export const environment = {
+export let environment = {
   production: true,
-  serverPort: process.env.PORT,
+  serverPort: 3002,
   serverAdress: 'http://localhost:',
   log: false
 };
