@@ -15,6 +15,7 @@ export class RoomService {
   public selectedRoomId: string;
   public currentRoom: Room;
   public currentPlayer: Player;
+  public currentWaitlisted: boolean;
 
   constructor(private readonly toastService: ToastService,
               private readonly socketService: SocketService) {

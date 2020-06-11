@@ -3,9 +3,11 @@ import { environment } from '../environments/environment';
 export const regex = RegExp(/^[a-zA-Z0-9]*$/);
 
 export const urlServer = (): string => {
-    let url = environment.serverAdress + environment.serverPort;
+    let url;
     if (environment.production) {
         url = `${window.location.protocol}//${window.location.host}`;
+    } else {
+        url = environment.serverAdress + environment.serverPort;
     }
     return url;
 };
