@@ -1,20 +1,21 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <a class="navbar-brand" routerLink='/home' [ngClass]="{'active': activeVue === '/home'}">Red-Tetris</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation"
+        (click)="menu.classList.toggle('show')">
         <span class="navbar-toggler-icon"></span>
     </button>
 
-    <div class="collapse navbar-collapse" id="navbarColor01">
+    <div class="collapse navbar-collapse " id="navbarColor01" #menu>
         <ul class="navbar-nav mr-auto">
             <li class="nav-item" [ngClass]="{'active': activeVue === '/room'}">
-                <a class="nav-link" routerLink='/room'>Room List</a>
+                <a class="nav-link" routerLink='/room' (click)="menu.classList.remove('show')">Room List</a>
             </li>
-            <li class="nav-item" [ngClass]="{'active': activeVue === '/createRoom'}">
-                <a class="nav-link" routerLink='/createRoom'>Create Room</a>
+            <li class="nav-item" [ngClass]="{'active': activeVue === '/play'}">
+                <a class="nav-link" routerLink='/play' (click)="menu.classList.remove('show')">Play</a>
             </li>
             <li class="nav-item" [ngClass]="{'active': activeVue === '/players'}">
-                <a class="nav-link" routerLink='/players'>Best Players</a>
+                <a class="nav-link" routerLink='/players' (click)="menu.classList.remove('show')">Best Players</a>
             </li>
         </ul>
     </div>

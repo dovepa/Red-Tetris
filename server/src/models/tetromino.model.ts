@@ -21,6 +21,5 @@ export class TetroMino {
         this.color = tetrominoList[randomTetro][0];
         this.letter = tetrominoList[randomTetro][1];
         this.shape = tetrominoList[randomTetro][2];
-        utils.log(this.shape);
     }
 }

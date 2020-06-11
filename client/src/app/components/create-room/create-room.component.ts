@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import * as utils from '../../utils';
 import { RoomService } from 'src/app/service/room.service';
+import { ToastService } from 'src/app/service/toast.service';
+import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
+import * as customUrlSerializer from '../../customUrlSerializer';
 
 @Component({
   selector: 'app-create-room',
@@ -16,10 +20,19 @@ export class CreateRoomComponent implements OnInit {
   roomNameStatus: number;
   timerEvent: number | undefined;
 
-  constructor(private readonly roomService: RoomService) {
+  constructor(private readonly roomService: RoomService,
+              private readonly toastService: ToastService,
+              private readonly socket: Socket,
+              private readonly router: Router
+  ) {
     this.roomNameStatus = 0;
     this.playerNameStatus = 0;
     this.mode = 'multiplayer';
+
+    this.socket.on('roomUpdate', data => {
+      utils.log('Socket :: roomUpdate');
+      this.verifRoomName();
+    });
   }
 
   async verifPlayerName() {
@@ -35,7 +48,7 @@ export class CreateRoomComponent implements OnInit {
     }
   }
 
-  async verifRoomName() {
+  async verifRoomName(timer = 600) {
     this.roomNameStatus = 0;
     window.clearTimeout(this.timerEvent);
     if (this.roomName.length <= 0) {
@@ -53,12 +66,26 @@ export class CreateRoomComponent implements OnInit {
         else {
           this.roomNameStatus = 2;
         }
-      }, 600);
+      }, timer);
     }
   }
 
-  createRoom() {
-
+  async createRoom() {
+    if (this.roomName && this.playerName && this.mode) {
+      this.roomService.createRoom(this.roomName, this.playerName, this.mode)
+        .then(res => {
+          this.toastService.createMessage('success', res);
+          // tslint:disable-next-line:max-line-length
+          this.router.navigate([`${customUrlSerializer.hashKey}${this.roomService.currentRoom.id}[${this.roomService.currentPlayer.name}]`]);
+        })
+        .catch(err => {
+          this.toastService.createMessage('error', err);
+          this.roomName = '';
+          this.playerName = '';
+          this.verifRoomName();
+          this.verifPlayerName();
+        });
+    }
   }
 
   ngOnInit(): void {

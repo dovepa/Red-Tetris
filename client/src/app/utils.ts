@@ -2,8 +2,17 @@ import { environment } from '../environments/environment';
 
 export const regex = RegExp(/^[a-zA-Z0-9]*$/);
 
+export const urlServer = (): string => {
+    let url = environment.serverAdress + environment.serverPort;
+    if (environment.production) {
+        url = `${window.location.protocol}//${window.location.host}`;
+    }
+    return url;
+};
+
 export const apiUrl = (...args: string[]): string => {
-    let url = environment.serverAdress + '/api';
+    let url = urlServer();
+    url = url.concat('/api');
     args.forEach(path => {
         url = url.concat('/' + path);
     });

@@ -2,10 +2,9 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { hashKey } from './customUrlSerializer';
 import { HomeComponent } from './vues/home/home.component';
-import { GameComponent } from './vues/game/game.component';
 import { PlayerComponent } from './vues/player/player.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
-import { CreateRoomComponent } from './vues/create-room/create-room.component';
+import { UserRoadComponent } from './vues/user-road/user-road.component';
 
 const routes: Routes = [
   {
@@ -15,7 +14,7 @@ const routes: Routes = [
   },
   {
     path: `${hashKey}:roomName[:playerName]`,
-    component: GameComponent,
+    component: UserRoadComponent,
     pathMatch: 'full',
   },
   {
@@ -24,8 +23,8 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'createRoom',
-    component: CreateRoomComponent,
+    path: 'play',
+    component: UserRoadComponent,
     pathMatch: 'full',
   },
   {

@@ -98,7 +98,6 @@ export class TetrisService {
         }
       });
     });
-    console.log(grid.shape);
   }
 
   erase(grid: TetrisGrid, tetro: TetroMino) {

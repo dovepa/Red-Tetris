@@ -1,21 +1,19 @@
 import { TetrisGrid } from './tetrisGrid.model';
 
 export class Player {
-    grid: TetrisGrid;
-    roomId: string;
-    name: string;
     id: string;
+    name: string;
+    roomId: string;
+    grid: TetrisGrid;
     alive: boolean;
     isPlaying: boolean;
-    player: boolean;
-    watcher: boolean;
+    isWatching: boolean;
     score: number;
-    scorindDate: Date;
-    lastPing: Date;
+    partWin: number;
 
-    constructor(roomId: string, name: string) {
+    constructor(roomId: string, name: string, socketId: string) {
         this.roomId = roomId;
         this.name = name;
-        this.id = roomId.concat('-', encodeURI(name));
+        this.id = socketId;
     }
 }

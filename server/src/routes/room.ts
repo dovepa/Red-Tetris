@@ -2,9 +2,17 @@ import * as express from 'express';
 import * as ctrl from '../controllers/room.controller';
 const roomRoute = express.Router();
 
-roomRoute.route('/getAll/').get(ctrl.getAllRooms);
-roomRoute.route('/test/').post(ctrl.testIfRoomNameIsFree);
-roomRoute.route('/getRoom/').post(ctrl.getRoom);
-roomRoute.route('/create/').post(ctrl.createRoom);
+roomRoute.route('/getAllRooms/').get(ctrl.getAllRooms);
+roomRoute.route('/getRoomId/').post(ctrl.getRoom);
+roomRoute.route('/testRoom/').post(ctrl.testIfRoomNameIsFree);
+roomRoute.route('/createRoom/').post(ctrl.createRoom);
+
+roomRoute.route('/createPlayer/').post(ctrl.createPlayer);
+roomRoute.route('/testPlayer/').post(ctrl.testIfPlayerNameIsFree);
+roomRoute.route('/disconnectPlayer/').post(ctrl.disconnectPlayer);
+roomRoute.route('/getPlayerId/').post(ctrl.getPlayer);
+
+roomRoute.route('/getAllScores/').get(ctrl.getAllPlayerScores);
+
 
 export default roomRoute;

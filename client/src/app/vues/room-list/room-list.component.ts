@@ -3,6 +3,8 @@ import * as utils from '../../utils';
 import { Room } from 'src/app/model/room.model';
 import { Player } from 'src/app/model/player.model';
 import { RoomService } from 'src/app/service/room.service';
+import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-room-list',
@@ -18,7 +20,9 @@ export class RoomListComponent implements OnInit {
   error: boolean;
   searchTmp: Room[];
 
-  constructor(private readonly roomService: RoomService) {
+  constructor(private readonly roomService: RoomService,
+              private readonly socket: Socket,
+              private readonly router: Router) {
     this.error = false;
     this.roomList = [];
 
@@ -26,6 +30,12 @@ export class RoomListComponent implements OnInit {
     this.searchTmp = this.roomList;
     this.sum = 0;
     this.appendItems();
+
+    this.socket.on('roomUpdate', async () => {
+      utils.log('Socket :: roomUpdate');
+      await this.getRooms();
+      this.searchRoom();
+    });
   }
 
   async getRooms() {
@@ -55,6 +65,11 @@ export class RoomListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  selectRoom(roomId: string) {
+    this.roomService.selectedRoomId = roomId;
+    this.router.navigate(['play']);
   }
 
   appendItems() {

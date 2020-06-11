@@ -4,14 +4,16 @@ import { TetroMino } from './tetromino.model';
 
 export class Room {
     roomName: string;
+    id: string;
     mode: number;
-    roomId: string;
-    players: Player[];
+    isPlaying: boolean;
     tetrominoList: TetroMino[];
-    master: Player;
+    playersId: string[];
+    masterId: string;
+    masterName: string;
     constructor(roomName: string, mode: number) {
         this.mode = mode;
         this.roomName = roomName;
-        this.roomId = encodeURI(roomName);
+        this.id = encodeURI(roomName);
     }
 }

@@ -14,11 +14,11 @@ const port = environment.serverPort || 3002;
 const app = express();
 const server = http.createServer(app);
 
-export const io = socket(server, {
+app.io = socket(server, {
     pingTimeout: 500000,
     cookie: false
 });
-socketController(io);
+socketController(app.io);
 
 const whitelist = [
     `http://localhost:${environment.clientPort}`,

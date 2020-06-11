@@ -1,0 +1,6 @@
+<div class="container-fluid">
+    <app-create-player *ngIf="selectedRoom !== undefined"></app-create-player>
+    <app-create-room *ngIf="selectedRoom === undefined && currentPlayer === undefined && currentRoom === undefined">
+    </app-create-room>
+    <app-game *ngIf="currentPlayer !== undefined && currentRoom !== undefined"></app-game>
+</div>
