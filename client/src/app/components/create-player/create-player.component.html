@@ -18,9 +18,9 @@
                                 pattern="[a-zA-Z ]*"
                                 [ngClass]="{'is-valid': playerNameStatus === 1, 'is-invalid' : playerNameStatus  > 1}" />
                             <div *ngIf="playerNameStatus === 1" class="valid-feedback">Success! This name is good.</div>
-                            <div *ngIf="playerNameStatus === 3" class="invalid-feedback">Sorry, player name already
+                            <div *ngIf="playerNameStatus === 2" class="invalid-feedback">Sorry, player name already
                                 used.</div>
-                            <div *ngIf="playerNameStatus === 2" class="invalid-feedback">Sorry, invalid player name.
+                            <div *ngIf="playerNameStatus === 3" class="invalid-feedback">Sorry, invalid player name.
                             </div>
                             <div *ngIf="playerNameStatus === 4" class="invalid-feedback">Sorry, max length 30 char.
                             </div>
