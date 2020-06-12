@@ -1,5 +1,6 @@
 export let environment = {
   production: true,
   serverAdress: '',
-  log: false
+  serverPort: 3000,
+  log: true
 };
