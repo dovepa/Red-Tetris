@@ -12,19 +12,29 @@ import { Subject } from 'rxjs';
 })
 export class RoomService {
 
+  constructor(private readonly toastService: ToastService,
+              private readonly socketService: SocketService) {
+  }
+
   public selectedRoomId: string;
   public currentRoom: Room;
   public currentPlayer: Player;
   public currentWaitlisted: boolean;
-
-  constructor(private readonly toastService: ToastService,
-              private readonly socketService: SocketService) {
-  }
+  public currentApproval: boolean;
 
   private updateCurrentData = new Subject<any>();
   updateCurrentDataObs = this.updateCurrentData.asObservable();
   runUpdateCurrentData() {
     this.updateCurrentData.next();
+  }
+
+  resetAll() {
+    this.selectedRoomId = undefined;
+    this.currentRoom = undefined;
+    this.currentPlayer = undefined;
+    this.currentWaitlisted = undefined;
+    this.currentApproval = undefined;
+    this.runUpdateCurrentData();
   }
 
   async testIfRoomNameIsFree(name: string): Promise<boolean> {

@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import * as utils from './utils';
 import { Socket } from 'ngx-socket-io';
 import { SocketService } from './service/socket.service';
+import { PendingChangesGuardService } from './service/pending-changes-guard.service';
 
 @Component({
   selector: 'app-root',

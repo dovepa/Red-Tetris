@@ -22,6 +22,10 @@ import { UserRoadComponent } from './vues/user-road/user-road.component';
 import { GameComponent } from './components/game/game.component';
 import { CreateRoomComponent } from './components/create-room/create-room.component';
 import { CreatePlayerComponent } from './components/create-player/create-player.component';
+import { WaitlistComponent } from './components/waitlist/waitlist.component';
+import { ApprovalComponent } from './components/approval/approval.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ModalComponent } from './components/modal/modal.component';
 
 const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
 
@@ -40,6 +44,9 @@ const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
     ModePipe,
     CreatePlayerComponent,
     UserRoadComponent,
+    WaitlistComponent,
+    ApprovalComponent,
+    ModalComponent,
   ],
   imports: [
     BrowserModule,
@@ -47,6 +54,7 @@ const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
     ReactiveFormsModule,
     FormsModule,
     InfiniteScrollModule,
+    NgbModule,
     SocketIoModule.forRoot(config)
   ],
   providers: [{ provide: UrlSerializer, useClass: CustomUrlSerializer }],
