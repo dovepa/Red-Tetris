@@ -28,6 +28,12 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
         this.verifPlayerName();
       }
     });
+
+    this.socket.on('updateRoom', data => {
+      if (data && data.room && data.room.id === this.roomService.selectedRoomId) {
+        this.verifPlayerName();
+      }
+    });
   }
 
   ngOnInit(): void {
