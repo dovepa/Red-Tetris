@@ -14,6 +14,7 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
 
   playerName = '';
   playerNameStatus: number;
+  isPlaying: boolean;
   timerEvent: number | undefined;
 
   constructor(private readonly roomService: RoomService,
@@ -45,12 +46,18 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
       this.timerEvent = window.setTimeout(() => {
         this.roomService.testIfPlayerNameIsFree(this.playerName)
           .then(res => {
-            if (res) {
+            if (res.status) {
               this.playerNameStatus = 1;
             }
             else {
               this.playerNameStatus = 2;
             }
+            if (res.isPlaying) {
+              this.isPlaying = true;
+            } else {
+              this.isPlaying = false;
+            }
+
           })
           .catch(err => {
             this.toastService.createMessage('error', err);
@@ -62,7 +69,9 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
   }
 
   createPlayer() {
-
+    this.roomService.createPlayer(this.playerName)
+      .then(res => { this.toastService.createMessage('success', res); })
+      .catch(err => { this.toastService.createMessage('error', err); });
   }
 
   ngOnDestroy() {

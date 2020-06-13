@@ -5,7 +5,6 @@
     <app-game
         *ngIf="currentPlayer !== undefined && currentRoom !== undefined && currentRoom.playersId.includes(currentPlayer.id)">
     </app-game>
-    <app-approval
-        *ngIf="currentPlayer !== undefined && currentRoom !== undefined && !currentRoom.playersId.includes(currentPlayer.id)">
+    <app-approval *ngIf="currentPlayer !== undefined && currentRoom === undefined && approval === true">
     </app-approval>
 </div>

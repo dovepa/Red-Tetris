@@ -32,7 +32,7 @@ export const getRoom = async(req, res) => {
 export const createRoom = async(req, res) => {
     const room = req.body;
     if (!room || !room.roomName || !room.mode || !room.playerName || !room.socketId)
-        res.status(202).json({ success: 'Bad format room 😢' });
+        res.status(202).json({ error: 'Bad format room 😢' });
     else if (!roomList.every((r) => { return r.roomName !== room.roomName; }))
         res.status(202).json({ error: 'Room already exist 😢' });
     else {
@@ -62,29 +62,58 @@ export const testIfPlayerNameIsFree = async(req, res) => {
                 return true;
             }
         });
-        res.status(200).json(status);
+        res.status(200).json({ status, isPlaying: roomList[roomIndex].isPlaying });
     }
     else
         res.status(400);
 };
 
-export const createPlayer = async(req, res) => {
-
-    const room = req.body;
-    req.app.io.emit('playerUpdate', room);
-    if (!room || !room.roomName || !room.mode || !room.playerName || !room.socketId)
-        res.status(202).json({ success: 'Bad format room 😢' });
-    else if (!roomList.every((r) => { return r.roomName !== room.roomName; }))
-        res.status(202).json({ error: 'Room already exist 😢' });
+export const approvalPlayer = async(req, res) => {
+    const data = req.body;
+    if (!data || !data.roomId || !data.playerName || !data.socketId)
+        res.status(202).json({ error: 'Bad format 😢' });
     else {
-        const newRoom = new Room(room.roomName, room.mode === 'solo' ? 0 : 1);
-        newRoom.masterId = room.socketId;
-        newRoom.masterName = room.playerName;
-        roomList.push(newRoom);
-        res.status(200).json({ success: 'Room created successfully 😃' });
-        req.app.io.emit('playerUpdate');
+        const roomIndex = roomList.findIndex(room => { return room.id === data.roomId; });
+        if (roomIndex === -1)
+            return res.status(202).json({ error: 'Room not found 😢' });
+        const status = playerList.every(player => {
+            if (roomList[roomIndex].playersId.includes(player.id) && data.playerName === player.name) {
+                return false;
+            } else {
+                return true;
+            }
+        });
+        if (status === true) {
+            const newPlayer = new Player(data.roomId, data.playerName, data.socketId);
+            req.app.io.emit('userKnock', { roomId: data.roomId, player: newPlayer });
+            return res.status(200).json({ success: 'Knock created successfully 😃', player: newPlayer });
+        } else {
+            return res.status(202).json({ error: 'Sorry, player name already used. 😢' });
+        }
     }
 };
+
+export const createPlayer = async(req, res) => {
+    const data = req.body;
+    if (!data || !data.player || !data.roomId) {
+        req.app.io.emit('userKnockSuccess', { room: data.player.roomId, player: data.player, error: 'Bad format 😢' });
+        return res.status(202).json({ error: 'Bad Request.' });
+    } else if (data.response === false)
+        req.app.io.emit('userKnockSuccess', { room: data.player.roomId, player: data.player, error: 'The roomMaster not accept you 😢' });
+    else {
+        const roomIndex = roomList.findIndex(room => { return room.id === data.roomId; });
+        if (roomIndex === -1)
+            req.app.io.emit('userKnockSuccess', { room: data.player.roomId, player: data.player, error: 'Room not found 😢' });
+        const newPlayer = new Player(data.roomId, data.player.name, data.player.id);
+        roomList[roomIndex].playersId.push(newPlayer.id);
+        playerList.push(newPlayer);
+        req.app.io.emit('userKnockSuccess', { room: roomList[roomIndex], player: newPlayer, success: 'RoomMaster let you enter 🤠' });
+        req.app.io.emit('updatePlayer', { player: newPlayer });
+        req.app.io.emit('updateRoom', { room: roomList[roomIndex] });
+    }
+    return res.status(200);
+};
+
 
 export const disconnectPlayer = async(req, res) => {
     res.status(200).json();

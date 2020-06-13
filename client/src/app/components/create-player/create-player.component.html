@@ -27,7 +27,14 @@
                         </div>
                     </div>
                 </div>
-                <div class="list-group-item" *ngIf="playerName.length > 0 && playerNameStatus === 1">
+                <div class="list-group-item" *ngIf="isPlaying">
+                    <div class="row">
+                        <div class="col-12 centerW">
+                            The game has already started, please wait until the end of the game to knock at the room.
+                        </div>
+                    </div>
+                </div>
+                <div class="list-group-item" *ngIf="playerName.length > 0 && playerNameStatus === 1 && !isPlaying">
                     <div class="row">
                         <div class="col-12 centerW">
                             <button type="button" class="btn btn-outline-success"

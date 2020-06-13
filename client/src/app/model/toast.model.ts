@@ -6,9 +6,3 @@ export interface ToastMessage {
     message: string;
     open: boolean;
 }
-
-export interface ToastAction extends ToastMessage {
-    roomId: string;
-    player: Player;
-}
-

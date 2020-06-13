@@ -7,6 +7,7 @@ roomRoute.route('/getRoomId/').post(ctrl.getRoom);
 roomRoute.route('/testRoom/').post(ctrl.testIfRoomNameIsFree);
 roomRoute.route('/createRoom/').post(ctrl.createRoom);
 
+roomRoute.route('/approvalPlayer/').post(ctrl.approvalPlayer);
 roomRoute.route('/createPlayer/').post(ctrl.createPlayer);
 roomRoute.route('/testPlayer/').post(ctrl.testIfPlayerNameIsFree);
 roomRoute.route('/disconnectPlayer/').post(ctrl.disconnectPlayer);

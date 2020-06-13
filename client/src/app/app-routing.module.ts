@@ -23,7 +23,6 @@ const routes: Routes = [
     path: 'room',
     component: RoomListComponent,
     pathMatch: 'full',
-    canDeactivate: [PendingChangesGuardService]
   },
   {
     path: 'play',

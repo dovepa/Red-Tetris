@@ -12,12 +12,13 @@ import { environment } from './environments/environment';
 
 const port = environment.serverPort || 3002;
 const app = express();
-const server = http.createServer(app);
+export const server = http.createServer(app);
 
 app.io = socket(server, {
     pingTimeout: 500000,
     cookie: false
 });
+
 socketController(app.io);
 
 const whitelist = [

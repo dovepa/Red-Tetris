@@ -1,7 +1,8 @@
 import * as utils from '../utils';
+import * as roomCtrl from './room.controller';
 
 const socketController = (io) => {
-
+    io.emit('userKnockSuccess', { error: 'sdfsfsf' });
     io.on('connection', socket => {
         utils.log(`new connection: ${socket.id}`);
 

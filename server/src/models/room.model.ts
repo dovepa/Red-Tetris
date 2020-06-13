@@ -5,6 +5,7 @@ export class Room {
     roomName: string;
     id: string;
     isPlaying: boolean;
+    pause: boolean;
     mode: number;
     tetrominoList: TetroMino[];
     playersId: string[];

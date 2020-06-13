@@ -6,21 +6,50 @@ import { ToastService } from './toast.service';
 import { SocketService } from './socket.service';
 import { Player } from '../model/player.model';
 import { Subject } from 'rxjs';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { ModalComponent } from '../components/modal/modal.component';
+import { Socket } from 'ngx-socket-io';
+import { platform } from 'os';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RoomService {
 
-  constructor(private readonly toastService: ToastService,
-              private readonly socketService: SocketService) {
-  }
-
   public selectedRoomId: string;
   public currentRoom: Room;
   public currentPlayer: Player;
-  public currentWaitlisted: boolean;
   public currentApproval: boolean;
+
+  constructor(private readonly toastService: ToastService,
+              private readonly socketService: SocketService,
+              private modalService: NgbModal,
+              private readonly socket: Socket) {
+
+    this.socket.on('userKnock', data => {
+      if (this.currentRoom && data.roomId === this.currentRoom.id
+        && this.currentRoom.masterId === this.socketService.socketId) {
+        this.userKnock(data.player);
+      }
+    });
+
+    this.socket.on('userKnockSuccess', data => {
+      if (data.player.id === this.socketService.socketId && data.room) {
+        if (data.error) {
+          this.toastService.createMessage('error', data.error);
+          this.resetAll();
+        } else if (data.success) {
+          this.currentRoom = data.room;
+          this.currentPlayer = data.player;
+          this.selectedRoomId = undefined;
+          this.currentApproval = undefined;
+          this.toastService.createMessage('success', data.success);
+          this.runUpdateCurrentData();
+        }
+      }
+    });
+
+  }
 
   private updateCurrentData = new Subject<any>();
   updateCurrentDataObs = this.updateCurrentData.asObservable();
@@ -32,7 +61,6 @@ export class RoomService {
     this.selectedRoomId = undefined;
     this.currentRoom = undefined;
     this.currentPlayer = undefined;
-    this.currentWaitlisted = undefined;
     this.currentApproval = undefined;
     this.runUpdateCurrentData();
   }
@@ -48,7 +76,7 @@ export class RoomService {
 
 
 
-  testIfPlayerNameIsFree(playerName: string): Promise<boolean> {
+  testIfPlayerNameIsFree(playerName: string): Promise<any> {
     return new Promise((resolve, reject) => {
       return axios.post(utils.apiUrl('room', 'testPlayer'), { playerName, roomId: this.selectedRoomId })
         .then((res) => {
@@ -93,6 +121,26 @@ export class RoomService {
     });
   }
 
+  createPlayer(playerName): Promise<string> {
+    return new Promise((resolve, reject) => {
+      return axios.post(utils.apiUrl('room', 'approvalPlayer'),
+        { roomId: this.selectedRoomId, playerName, socketId: this.socketService.socketId })
+        .then((res) => {
+          if (res.data.success && res.data.player) {
+            this.currentPlayer = res.data.player;
+            this.currentRoom = undefined;
+            this.currentApproval = true;
+            this.runUpdateCurrentData();
+            resolve(res.data.success);
+          }
+          else if (res.data.error) {
+            reject(res.data.error);
+          }
+        })
+        .catch((err) => { reject(err); });
+    });
+  }
+
   async getRoom(id: string): Promise<Room> {
     let room: Room;
     await axios.post(utils.apiUrl('room', 'getRoomId'), { id })
@@ -109,6 +157,29 @@ export class RoomService {
         player = res.data;
       });
     return player;
+  }
+
+  userKnock(newPlayer: Player) {
+    let subject = new Subject<boolean>();
+    const modalRef = this.modalService.open(ModalComponent, { backdrop: 'static', keyboard: false });
+    modalRef.componentInstance.title = 'New user Knock 🚪';
+    modalRef.componentInstance.content = newPlayer.name + ' wants to join the room !';
+    modalRef.componentInstance.yes = 'Accept 🤗';
+    modalRef.componentInstance.no = 'Refuse 💔';
+    subject = modalRef.componentInstance.subject;
+    return modalRef.result.then(response => {
+      utils.log(`Pending changes accept user ${response}`);
+      axios.post(utils.apiUrl('room', 'createPlayer'), { player: newPlayer, roomId: this.currentRoom.id, response })
+        .then(res => {
+          if (res.data.success) {
+            this.toastService.createMessage('success', res.data.success);
+          } else if (res.data.error) {
+            this.toastService.createMessage('error', res.data.error);
+          }
+        })
+        .catch(err => { this.toastService.createMessage('error', err); });
+      return response;
+    });
   }
 
 }
