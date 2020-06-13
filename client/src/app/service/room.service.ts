@@ -48,6 +48,17 @@ export class RoomService {
       }
     });
 
+    this.socket.on('updatePlayer', data => {
+      if (data && data.player && data.player.id === this.socketService.socketId) {
+        this.currentPlayer = data.player;
+      }
+    });
+
+    this.socket.on('updateRoom', data => {
+      if (data && data.room && data.room.id === this.currentRoom.id) {
+        this.currentRoom = data.room;
+      }
+    });
   }
 
   private updateCurrentData = new Subject<any>();
