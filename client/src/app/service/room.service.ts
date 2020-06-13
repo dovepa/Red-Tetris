@@ -9,7 +9,6 @@ import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../components/modal/modal.component';
 import { Socket } from 'ngx-socket-io';
-import { platform } from 'os';
 
 @Injectable({
   providedIn: 'root'
