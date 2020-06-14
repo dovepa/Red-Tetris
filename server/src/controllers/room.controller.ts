@@ -104,12 +104,15 @@ export const createPlayer = async(req, res) => {
     if (!data || !data.player || !data.roomId) {
         req.app.io.emit('userKnockSuccess', { room: data.player.roomId, player: data.player, error: 'Bad format 😢' });
         return res.status(202).json({ error: 'Bad Request.' });
-    } else if (data.response === false)
+    } else if (data.response === false) {
         req.app.io.emit('userKnockSuccess', { room: data.player.roomId, player: data.player, error: 'The roomMaster not accept you 😢' });
-    else {
+        return res.status(202);
+    } else {
         const roomIndex = roomList.findIndex(room => { return room.id === data.roomId; });
-        if (roomIndex === -1)
+        if (roomIndex === -1) {
             req.app.io.emit('userKnockSuccess', { room: data.player.roomId, player: data.player, error: 'Room not found 😢' });
+            return res.status(202);
+        }
         const newPlayer = new Player(data.roomId, data.player.name, data.player.id);
         newPlayer.approval = true;
         roomList[roomIndex].playersId.push(newPlayer.id);
