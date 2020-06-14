@@ -31,10 +31,18 @@ export class RoomListComponent implements OnInit {
     this.sum = 0;
     this.appendItems();
 
-    this.socket.on('roomUpdate', async () => {
+    this.socket.on('roomUpdate', async (data) => {
       utils.log('Socket :: roomUpdate');
-      await this.getRooms();
-      this.searchRoom();
+      if (data && data.room) {
+        this.roomList.forEach(r => {
+          if (r.id === data.room.id) {
+            r = data.room;
+          }
+        });
+      } else {
+        await this.getRooms();
+        this.searchRoom();
+      }
     });
   }
 

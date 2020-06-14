@@ -1,10 +1,5 @@
 <div class="container-fluid">
-    <app-create-player *ngIf="selectedRoom !== undefined && approval === undefined"></app-create-player>
-    <app-create-room *ngIf="selectedRoom === undefined && currentPlayer === undefined && currentRoom === undefined">
-    </app-create-room>
-    <app-game
-        *ngIf="currentPlayer !== undefined && currentRoom !== undefined && currentRoom.playersId.includes(currentPlayer.id)">
-    </app-game>
-    <app-approval *ngIf="currentPlayer !== undefined && currentRoom === undefined && approval === true">
-    </app-approval>
+    <app-create-room *ngIf="!selectedRoom && !currentPlayer && !currentRoom"></app-create-room>
+    <app-create-player *ngIf="selectedRoom  && !currentPlayer"></app-create-player>
+    <app-approval *ngIf="!currentRoom && currentPlayer && currentPlayer.approval === false"></app-approval>
 </div>

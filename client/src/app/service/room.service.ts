@@ -9,6 +9,8 @@ import { Subject } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../components/modal/modal.component';
 import { Socket } from 'ngx-socket-io';
+import { Router } from '@angular/router';
+import { hashKey } from '../customUrlSerializer';
 
 @Injectable({
   providedIn: 'root'
@@ -18,11 +20,11 @@ export class RoomService {
   public selectedRoomId: string;
   public currentRoom: Room;
   public currentPlayer: Player;
-  public currentApproval: boolean;
 
   constructor(private readonly toastService: ToastService,
               private readonly socketService: SocketService,
               private modalService: NgbModal,
+              private router: Router,
               private readonly socket: Socket) {
 
     this.socket.on('userKnock', data => {
@@ -41,9 +43,9 @@ export class RoomService {
           this.currentRoom = data.room;
           this.currentPlayer = data.player;
           this.selectedRoomId = undefined;
-          this.currentApproval = undefined;
           this.toastService.createMessage('success', data.success);
           this.runUpdateCurrentData();
+          this.goToGame();
         }
       }
     });
@@ -67,11 +69,14 @@ export class RoomService {
     this.updateCurrentData.next();
   }
 
+  goToGame() {
+    this.router.navigate([`${hashKey}${this.currentRoom.id}[${this.currentPlayer.name}]`]);
+  }
+
   resetAll() {
     this.selectedRoomId = undefined;
     this.currentRoom = undefined;
     this.currentPlayer = undefined;
-    this.currentApproval = undefined;
     this.runUpdateCurrentData();
   }
 
@@ -139,7 +144,6 @@ export class RoomService {
           if (res.data.success && res.data.player) {
             this.currentPlayer = res.data.player;
             this.currentRoom = undefined;
-            this.currentApproval = true;
             this.runUpdateCurrentData();
             resolve(res.data.success);
           }
@@ -190,6 +194,15 @@ export class RoomService {
         .catch(err => { this.toastService.createMessage('error', err); });
       return response;
     });
+  }
+
+  async getPlayerList(id: string): Promise<Player[]> {
+    let room: [];
+    await axios.post(utils.apiUrl('room', 'getRoomId'), { id })
+      .then((res) => {
+        room = res.data;
+      });
+    return room;
   }
 
 }

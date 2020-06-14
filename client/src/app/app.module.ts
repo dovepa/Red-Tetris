@@ -12,7 +12,6 @@ import { AppComponent } from './app.component';
 import { PlayerComponent } from './vues/player/player.component';
 import { HomeComponent } from './vues/home/home.component';
 import { HeaderComponent } from './components/header/header.component';
-import { ChatComponent } from './components/chat/chat.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
 import { TetrisGridComponent } from './components/tetris-grid/tetris-grid.component';
@@ -35,7 +34,6 @@ const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
     GameComponent,
     HomeComponent,
     HeaderComponent,
-    ChatComponent,
     CreateRoomComponent,
     ToastComponent,
     RoomListComponent,

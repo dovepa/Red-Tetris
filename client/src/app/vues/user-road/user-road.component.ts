@@ -15,7 +15,6 @@ export class UserRoadComponent implements OnInit, OnDestroy {
   currentRoom: Room;
   currentPlayer: Player;
   waitlisted: boolean;
-  approval: boolean;
 
   subscription: Subscription;
 
@@ -27,8 +26,7 @@ export class UserRoadComponent implements OnInit, OnDestroy {
     this.selectedRoom = this.roomService.selectedRoomId;
     this.currentPlayer = this.roomService.currentPlayer;
     this.currentRoom = this.roomService.currentRoom;
-    this.approval = this.roomService.currentApproval;
-    console.log(this.approval, this.currentRoom, this.currentPlayer, this.selectedRoom);
+    console.log(this.currentRoom, this.currentPlayer, this.selectedRoom);
   }
 
   ngOnDestroy() {

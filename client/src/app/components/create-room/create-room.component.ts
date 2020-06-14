@@ -3,8 +3,6 @@ import * as utils from '../../utils';
 import { RoomService } from 'src/app/service/room.service';
 import { ToastService } from 'src/app/service/toast.service';
 import { Socket } from 'ngx-socket-io';
-import { Router } from '@angular/router';
-import * as customUrlSerializer from '../../customUrlSerializer';
 
 @Component({
   selector: 'app-create-room',
@@ -22,14 +20,14 @@ export class CreateRoomComponent implements OnInit {
 
   constructor(private readonly roomService: RoomService,
               private readonly toastService: ToastService,
-              private readonly socket: Socket,
-              private readonly router: Router
+              private readonly socket: Socket
   ) {
     this.roomNameStatus = 0;
     this.playerNameStatus = 0;
     this.mode = 'multiplayer';
 
-    this.socket.on('roomUpdate', data => {
+    this.socket.on('roomUpdate', async (data) => {
+      // data.room
       utils.log('Socket :: roomUpdate');
       this.verifRoomName();
     });
@@ -75,8 +73,7 @@ export class CreateRoomComponent implements OnInit {
       this.roomService.createRoom(this.roomName, this.playerName, this.mode)
         .then(res => {
           this.toastService.createMessage('success', res);
-          // tslint:disable-next-line:max-line-length
-          this.router.navigate([`${customUrlSerializer.hashKey}${this.roomService.currentRoom.id}[${this.roomService.currentPlayer.name}]`]);
+          this.roomService.goToGame();
         })
         .catch(err => {
           this.toastService.createMessage('error', err);

@@ -3,6 +3,9 @@ import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../components/modal/modal.component';
 import { Subject } from 'rxjs';
 import * as utils from './../utils';
+import { GameComponent } from '../components/game/game.component';
+import { Socket } from 'ngx-socket-io';
+import { SocketService } from './socket.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,9 +13,15 @@ import * as utils from './../utils';
 export class PendingChangesGuardService {
 
 
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal,
+              private readonly socketService: SocketService,
+              private readonly socket: Socket) { }
 
-  canDeactivate() {
+  canDeactivate(gameComponenet: GameComponent) {
+    if (gameComponenet.exit) {
+      this.socket.emit('playerLeave', this.socketService.socketId);
+      return gameComponenet.exit;
+    }
     let subject = new Subject<boolean>();
     const modalRef = this.modalService.open(ModalComponent, { backdrop: 'static', keyboard: false });
     modalRef.componentInstance.title = 'Leave the room 😱';
@@ -21,6 +30,9 @@ export class PendingChangesGuardService {
     modalRef.componentInstance.no = 'Cancel';
     subject = modalRef.componentInstance.subject;
     return modalRef.result.then(response => {
+      if (response) {
+        this.socket.emit('playerLeave', this.socketService.socketId);
+      }
       utils.log(`Pending changes guard ${response}`);
       return response;
     });

@@ -42,6 +42,7 @@ export const createRoom = async(req, res) => {
         newRoom.playersId = [room.socketId];
         roomList.push(newRoom);
         const newPlayer = new Player(newRoom.id, room.playerName, room.socketId);
+        newPlayer.approval = true;
         playerList.push(newPlayer);
         res.status(200).json({ success: 'Room created successfully 😃', room: newRoom, player: newPlayer });
         req.app.io.emit('roomUpdate');
@@ -85,6 +86,7 @@ export const approvalPlayer = async(req, res) => {
         });
         if (status === true) {
             const newPlayer = new Player(data.roomId, data.playerName, data.socketId);
+            newPlayer.approval = false;
             req.app.io.emit('userKnock', { roomId: data.roomId, player: newPlayer });
             return res.status(200).json({ success: 'Knock created successfully 😃', player: newPlayer });
         } else {
@@ -105,6 +107,7 @@ export const createPlayer = async(req, res) => {
         if (roomIndex === -1)
             req.app.io.emit('userKnockSuccess', { room: data.player.roomId, player: data.player, error: 'Room not found 😢' });
         const newPlayer = new Player(data.roomId, data.player.name, data.player.id);
+        newPlayer.approval = true;
         roomList[roomIndex].playersId.push(newPlayer.id);
         playerList.push(newPlayer);
         req.app.io.emit('userKnockSuccess', { room: roomList[roomIndex], player: newPlayer, success: 'RoomMaster let you enter 🤠' });
@@ -114,6 +117,12 @@ export const createPlayer = async(req, res) => {
     return res.status(200);
 };
 
+export const deletePlayer = (socketId: string) => {
+    return new Promise((resolve, reject) => {
+        if (!socketId)
+            reject('No socket Id');
+    });
+};
 
 export const disconnectPlayer = async(req, res) => {
     res.status(200).json();
@@ -131,6 +140,7 @@ export const getPlayer = async(req, res) => {
     });
     res.status(202).json({ error: 'Player not found.' });
 };
+
 export const getAllPlayerScores = async(req, res) => {
     res.status(200).json(playerScore);
 };

@@ -1,6 +1,7 @@
 import { environment } from '../environments/environment';
 
 export const regex = RegExp(/^[a-zA-Z0-9]*$/);
+export const gameRegex = RegExp(/^\/#[a-zA-Z0-9]*\[[a-zA-Z0-9]*\]$/);
 
 export const urlServer = (): string => {
     let url = environment.serverAdress + environment.serverPort;

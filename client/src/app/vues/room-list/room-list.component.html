@@ -39,11 +39,12 @@
                                     <div class="col-2 centerH">{{room?.masterName}}</div>
                                     <div class="col-2 centerH">{{room?.mode | mode}}</div>
                                     <div class="col-2 centerH">{{room?.playersId?.length}}</div>
-                                    <div class="col-4">
-                                        <button *ngIf="room.mode > 0" (click)='selectRoom(room.id)' type="button"
-                                            class="btn btn-success float-right">
+                                    <div class="col-4" *ngIf="room.mode > 0">
+                                        <button *ngIf="room.isPlaying !== true" (click)='selectRoom(room.id)'
+                                            type="button" class="btn btn-success float-right">
                                             Join the room
                                         </button>
+                                        <p *ngIf="room.isPlaying === true">Game is in progress 👾</p>
                                     </div>
                                 </div>
                             </div>

@@ -49,16 +49,6 @@ export class TetrisGridComponent implements OnInit {
 
   @HostListener('window:keydown', ['$event'])
   keyEvent(event: KeyboardEvent) {
-    if (event.keyCode === 87) {
-      this.tetrominoList = [];
-      let i = 0;
-      while (i < 4) {
-        const tetro = new TetroMino();
-        if (i === 0) { this.current = tetro; }
-        else { this.tetrominoList.push(tetro); }
-        i++;
-      }
-    }
     if (event.keyCode === 37) { utils.stopAll(event); this.move('left'); }
     if (event.keyCode === 38) { utils.stopAll(event); this.move('up'); }
     if (event.keyCode === 39) { utils.stopAll(event); this.move('right'); }

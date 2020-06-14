@@ -6,6 +6,7 @@ import { PlayerComponent } from './vues/player/player.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
 import { UserRoadComponent } from './vues/user-road/user-road.component';
 import { PendingChangesGuardService } from './service/pending-changes-guard.service';
+import { GameComponent } from './components/game/game.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,7 @@ const routes: Routes = [
   },
   {
     path: `${hashKey}:roomName[:playerName]`,
-    component: UserRoadComponent,
+    component: GameComponent,
     pathMatch: 'full',
     canDeactivate: [PendingChangesGuardService]
   },

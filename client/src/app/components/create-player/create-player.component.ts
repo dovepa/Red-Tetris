@@ -22,15 +22,15 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
               private readonly router: Router,
               private readonly socket: Socket) {
 
-    this.socket.on('playerUpdate', roomId => {
-      utils.log('Socket :: playerUpdate', roomId);
-      if (this.roomService.selectedRoomId === roomId) {
+    this.socket.on('playerUpdate', roomName => {
+      utils.log('Socket :: playerUpdate', roomName);
+      if (this.roomService.selectedRoomName === roomName) {
         this.verifPlayerName();
       }
     });
 
     this.socket.on('updateRoom', data => {
-      if (data && data.room && data.room.id === this.roomService.selectedRoomId) {
+      if (data && data.room && data.room.id === this.roomService.selectedRoomName) {
         this.verifPlayerName();
       }
     });

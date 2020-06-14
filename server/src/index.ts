@@ -5,7 +5,6 @@ import * as bodyParser from 'body-parser';
 import * as socket from 'socket.io';
 import * as cors from 'cors';
 import socketController from './controllers/socket.controller';
-import chatRoute from './routes/chat';
 import tetrisRoute from './routes/tetris';
 import roomRoute from './routes/room';
 import { environment } from './environments/environment';
@@ -52,7 +51,6 @@ routerApp.route('/api/')
             usage: `Routes for api : chat, room, tetris`
         });
     });
-routerApp.use('/api/chat/', chatRoute);
 routerApp.use('/api/room/', roomRoute);
 routerApp.use('/api/tetris/', tetrisRoute);
 
