@@ -1,6 +1,6 @@
 export class PlayerScore {
     name: string;
-    roomName: string;
+    roomId: string;
     score: number;
     date: Date;
 }

@@ -6,14 +6,11 @@ const socketController = (io) => {
     io.on('connection', socket => {
         utils.log(`new connection: ${socket.id}`);
 
-        socket.on('playerLeave', ((socketId) => {
-            return roomCtrl.deletePlayer(socketId)
-                .then((res: any) => { io.emit('updateRoom', { room: res.room }); })
-                .catch((err) => { utils.error(err); });
-        }));
-
-        socket.on('disconnect', reason => {
+        socket.on('disconnect', async(reason) => {
             utils.log(`${socket.id} disconnected because: ${reason}`);
+            await roomCtrl.deletePlayer(socket.id)
+                .then((editRoom) => { io.emit('updateRoom', { room: editRoom }); })
+                .catch((err) => { utils.error(err); });
         });
     });
 };

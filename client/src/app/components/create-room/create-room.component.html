@@ -31,15 +31,15 @@
                             Room Name :
                         </div>
                         <div class="col-8">
-                            <input maxlength="30" type="text" [(ngModel)]="roomName" (ngModelChange)='verifRoomName()'
+                            <input maxlength="30" type="text" [(ngModel)]="roomId" (ngModelChange)='verifRoomId()'
                                 class="form-control" placeholder="Name" pattern="[a-zA-Z ]*"
-                                [ngClass]="{'is-valid': roomNameStatus === 1, 'is-invalid' : roomNameStatus  > 1}" />
-                            <div *ngIf="roomNameStatus === 1" class="valid-feedback">Success! This name is free.</div>
-                            <div *ngIf="roomNameStatus === 2" class="invalid-feedback">Sorry, this name is already
+                                [ngClass]="{'is-valid': roomIdStatus === 1, 'is-invalid' : roomIdStatus  > 1}" />
+                            <div *ngIf="roomIdStatus === 1" class="valid-feedback">Success! This name is free.</div>
+                            <div *ngIf="roomIdStatus === 2" class="invalid-feedback">Sorry, this name is already
                                 taken. Try
                                 another?</div>
-                            <div *ngIf="roomNameStatus === 3" class="invalid-feedback">Sorry, invalid player name.</div>
-                            <div *ngIf="roomNameStatus === 4" class="invalid-feedback">Sorry, max length 30 char.</div>
+                            <div *ngIf="roomIdStatus === 3" class="invalid-feedback">Sorry, invalid player name.</div>
+                            <div *ngIf="roomIdStatus === 4" class="invalid-feedback">Sorry, max length 30 char.</div>
                         </div>
                     </div>
                 </div>
@@ -64,7 +64,7 @@
                     </div>
                 </div>
                 <div class="list-group-item"
-                    *ngIf="roomName.length > 0 && roomNameStatus === 1 && playerName.length > 0 && playerNameStatus === 1">
+                    *ngIf="roomId.length > 0 && roomIdStatus === 1 && playerName.length > 0 && playerNameStatus === 1">
                     <div class="row">
                         <div class="col-12 centerW">
                             <button type="button" class="btn btn-outline-success" (click)="createRoom()">Create</button>

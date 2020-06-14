@@ -22,15 +22,14 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
               private readonly router: Router,
               private readonly socket: Socket) {
 
-    this.socket.on('playerUpdate', roomName => {
-      utils.log('Socket :: playerUpdate', roomName);
-      if (this.roomService.selectedRoomName === roomName) {
+    this.socket.on('playerUpdate', roomId => {
+      if (this.roomService.selectedRoomId === roomId) {
         this.verifPlayerName();
       }
     });
 
     this.socket.on('updateRoom', data => {
-      if (data && data.room && data.room.id === this.roomService.selectedRoomName) {
+      if (data && data.room && data.room.id === this.roomService.selectedRoomId) {
         this.verifPlayerName();
       }
     });
@@ -76,7 +75,10 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
 
   createPlayer() {
     this.roomService.createPlayer(this.playerName)
-      .then(res => { this.toastService.createMessage('success', res); })
+      .then(res => {
+        this.toastService.createMessage('success', res);
+        this.router.navigate(['approval']);
+      })
       .catch(err => { this.toastService.createMessage('error', err); });
   }
 

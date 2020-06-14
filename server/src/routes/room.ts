@@ -4,7 +4,7 @@ const roomRoute = express.Router();
 
 roomRoute.route('/getAllRooms/').get(ctrl.getAllRooms);
 roomRoute.route('/getRoomId/').post(ctrl.getRoom);
-roomRoute.route('/testRoom/').post(ctrl.testIfRoomNameIsFree);
+roomRoute.route('/testRoom/').post(ctrl.testIfRoomIdIsFree);
 roomRoute.route('/createRoom/').post(ctrl.createRoom);
 
 roomRoute.route('/approvalPlayer/').post(ctrl.approvalPlayer);

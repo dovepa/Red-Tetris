@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Socket } from 'ngx-socket-io';
 
 @Injectable({
   providedIn: 'root'
@@ -6,9 +7,10 @@ import { Injectable } from '@angular/core';
 export class SocketService {
 
   public socketId: string;
-  constructor() { }
+  constructor(private readonly socket: Socket) { }
 
-  destroySocket(id: string): void {
-
+  resetSocket() {
+    this.socket.disconnect(true);
+    this.socket.connect();
   }
 }

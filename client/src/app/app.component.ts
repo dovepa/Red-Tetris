@@ -17,9 +17,6 @@ export class AppComponent {
               private readonly socketService: SocketService) {
     socket.on('connect', () => {
       utils.log(`Socket id :: ${this.socket.ioSocket.id}`);
-      if (this.socketService.socketId) {
-        this.socketService.destroySocket(this.socketService.socketId);
-      }
       this.socketService.socketId = this.socket.ioSocket.id;
     });
   }

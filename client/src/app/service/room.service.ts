@@ -27,38 +27,21 @@ export class RoomService {
               private router: Router,
               private readonly socket: Socket) {
 
-    this.socket.on('userKnock', data => {
-      if (this.currentRoom && data.roomId === this.currentRoom.id
-        && this.currentRoom.masterId === this.socketService.socketId) {
-        this.userKnock(data.player);
-      }
-    });
-
-    this.socket.on('userKnockSuccess', data => {
-      if (data.player.id === this.socketService.socketId && data.room) {
-        if (data.error) {
-          this.toastService.createMessage('error', data.error);
-          this.resetAll();
-        } else if (data.success) {
-          this.currentRoom = data.room;
-          this.currentPlayer = data.player;
-          this.selectedRoomId = undefined;
-          this.toastService.createMessage('success', data.success);
-          this.runUpdateCurrentData();
-          this.goToGame();
-        }
-      }
-    });
-
     this.socket.on('updatePlayer', data => {
-      if (data && data.player && data.player.id === this.socketService.socketId) {
+      if (this.currentPlayer && this.currentPlayer.id
+        && data && data.player && data.player.id && data.player.id === this.currentPlayer.id) {
+        utils.log('Socket :: updatePlayer service', data, this.currentPlayer);
         this.currentPlayer = data.player;
+        this.runUpdateCurrentData();
       }
     });
 
     this.socket.on('updateRoom', data => {
-      if (data && data.room && data.room.id === this.currentRoom.id) {
+      if (data && data.room && data.room.id && this.currentRoom
+        && this.currentRoom.id && data.room.id === this.currentRoom.id) {
+        utils.log('Socket :: updateRoom service', data, this.currentRoom);
         this.currentRoom = data.room;
+        this.runUpdateCurrentData();
       }
     });
   }
@@ -80,7 +63,7 @@ export class RoomService {
     this.runUpdateCurrentData();
   }
 
-  async testIfRoomNameIsFree(name: string): Promise<boolean> {
+  async testIfRoomIdIsFree(name: string): Promise<boolean> {
     let status = false;
     await axios.post(utils.apiUrl('room', 'testRoom'), { name })
       .then((res) => {
@@ -118,9 +101,9 @@ export class RoomService {
     return list;
   }
 
-  createRoom(roomName, playerName, mode): Promise<string> {
+  createRoom(roomId, playerName, mode): Promise<string> {
     return new Promise((resolve, reject) => {
-      return axios.post(utils.apiUrl('room', 'createRoom'), { roomName, playerName, mode, socketId: this.socketService.socketId })
+      return axios.post(utils.apiUrl('room', 'createRoom'), { roomId, playerName, mode, socketId: this.socketService.socketId })
         .then((res) => {
           if (res.data.success) {
             this.currentPlayer = res.data.player;
@@ -181,9 +164,10 @@ export class RoomService {
     modalRef.componentInstance.yes = 'Accept 🤗';
     modalRef.componentInstance.no = 'Refuse 💔';
     subject = modalRef.componentInstance.subject;
-    return modalRef.result.then(response => {
+
+    return modalRef.result.then(async response => {
       utils.log(`Pending changes accept user ${response}`);
-      axios.post(utils.apiUrl('room', 'createPlayer'), { player: newPlayer, roomId: this.currentRoom.id, response })
+      await axios.post(utils.apiUrl('room', 'createPlayer'), { player: newPlayer, roomId: this.currentRoom.id, response })
         .then(res => {
           if (res.data.success) {
             this.toastService.createMessage('success', res.data.success);

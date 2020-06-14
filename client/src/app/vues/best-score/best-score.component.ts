@@ -3,11 +3,11 @@ import * as utils from '../../utils';
 import { Player } from 'src/app/model/player.model';
 
 @Component({
-  selector: 'app-player',
-  templateUrl: './player.component.html',
-  styleUrls: ['./player.component.scss']
+  selector: 'app-best-score',
+  templateUrl: './best-score.component.html',
+  styleUrls: ['./best-score.component.scss']
 })
-export class PlayerComponent implements OnInit {
+export class BestScoreComponent implements OnInit {
 
   sum: number;
   listPlayers: Player[] = [];

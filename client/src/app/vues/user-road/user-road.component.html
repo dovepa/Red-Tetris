@@ -1,5 +1,0 @@
-<div class="container-fluid">
-    <app-create-room *ngIf="!selectedRoom && !currentPlayer && !currentRoom"></app-create-room>
-    <app-create-player *ngIf="selectedRoom  && !currentPlayer"></app-create-player>
-    <app-approval *ngIf="!currentRoom && currentPlayer && currentPlayer.approval === false"></app-approval>
-</div>

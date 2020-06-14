@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as utils from '../../utils';
 import { Room } from 'src/app/model/room.model';
 import { Player } from 'src/app/model/player.model';
@@ -31,17 +31,14 @@ export class RoomListComponent implements OnInit {
     this.sum = 0;
     this.appendItems();
 
-    this.socket.on('roomUpdate', async (data) => {
-      utils.log('Socket :: roomUpdate');
+    this.socket.on('updateRoom', async (data) => {
+      await this.getRooms();
       if (data && data.room) {
         this.roomList.forEach(r => {
           if (r.id === data.room.id) {
             r = data.room;
           }
         });
-      } else {
-        await this.getRooms();
-        this.searchRoom();
       }
     });
   }
@@ -63,7 +60,7 @@ export class RoomListComponent implements OnInit {
       this.searchTmp = this.roomList;
     } else {
       this.roomList.forEach(room => {
-        if (room.roomName.includes(this.search)) {
+        if (room.id.includes(this.search)) {
           this.searchTmp.push(room);
         }
       });
@@ -77,7 +74,7 @@ export class RoomListComponent implements OnInit {
 
   selectRoom(roomId: string) {
     this.roomService.selectedRoomId = roomId;
-    this.router.navigate(['play']);
+    this.router.navigate(['create']);
   }
 
   appendItems() {

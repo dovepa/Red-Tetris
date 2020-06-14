@@ -1,5 +1,7 @@
 import { environment } from './environments/environment';
 
+export const regex = RegExp(/^[a-zA-Z0-9]*$/);
+
 export const getRandomInt = (max: number): number => {
   return Math.floor(Math.random() * Math.floor(max));
 };

@@ -3,7 +3,7 @@ import { TetrisGrid } from './tetrisGrid.model';
 export class Player {
     id: string;
     name: string;
-    roomName: string;
+    roomId: string;
     grid: TetrisGrid;
     alive: boolean;
     isPlaying: boolean;
@@ -11,8 +11,8 @@ export class Player {
     score: number;
     partWin: number;
 
-    constructor(roomName: string, name: string, socketId: string) {
-        this.roomName = roomName;
+    constructor(roomId: string, name: string, socketId: string) {
+        this.roomId = roomId;
         this.name = name;
         this.id = socketId;
     }

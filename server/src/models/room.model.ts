@@ -2,7 +2,6 @@ import { Player } from './player.model';
 import { TetroMino } from './tetromino.model';
 
 export class Room {
-    roomName: string;
     id: string;
     isPlaying: boolean;
     pause: boolean;
@@ -11,9 +10,8 @@ export class Room {
     playersId: string[];
     masterId: string;
     masterName: string;
-    constructor(roomName: string, mode: number) {
+    constructor(roomId: string, mode: number) {
         this.mode = mode;
-        this.roomName = roomName;
-        this.id = encodeURI(roomName);
+        this.id = roomId;
     }
 }

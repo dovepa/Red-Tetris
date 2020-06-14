@@ -1,6 +1,7 @@
 import { Room } from '../models/room.model';
 import { Player } from '../models/player.model';
 import { PlayerScore } from '../models/score.model';
+import { regex } from '../utils';
 
 const roomList: Room[] = [];
 const playerList: Player[] = [];
@@ -10,11 +11,11 @@ export const getAllRooms = async(req, res) => {
     res.status(200).json(roomList);
 };
 
-export const testIfRoomNameIsFree = async(req, res) => {
+export const testIfRoomIdIsFree = async(req, res) => {
     const data = req.body;
     let status = false;
     if (data.name)
-        status = roomList.every((room) => { return room.roomName !== data.name; });
+        status = roomList.every((room) => { return room.id !== data.name; });
     res.status(200).json(status);
 };
 
@@ -30,13 +31,16 @@ export const getRoom = async(req, res) => {
 };
 
 export const createRoom = async(req, res) => {
+    req.app.io.emit('updateRoom', {});
+
     const room = req.body;
-    if (!room || !room.roomName || !room.mode || !room.playerName || !room.socketId)
+    if (!room || !room.roomId || regex.test(room.roomId) === false || !room.mode
+        || !room.playerName || regex.test(room.playerName) === false || !room.socketId)
         res.status(202).json({ error: 'Bad format room 😢' });
-    else if (!roomList.every((r) => { return r.roomName !== room.roomName; }))
+    else if (!roomList.every((r) => { return r.id !== room.roomId; }))
         res.status(202).json({ error: 'Room already exist 😢' });
     else {
-        const newRoom = new Room(room.roomName, room.mode === 'solo' ? 0 : 1);
+        const newRoom = new Room(room.roomId, room.mode === 'solo' ? 0 : 1);
         newRoom.masterName = room.playerName;
         newRoom.masterId = room.socketId;
         newRoom.playersId = [room.socketId];
@@ -44,8 +48,8 @@ export const createRoom = async(req, res) => {
         const newPlayer = new Player(newRoom.id, room.playerName, room.socketId);
         newPlayer.approval = true;
         playerList.push(newPlayer);
+        req.app.io.emit('updateRoom', { room: newRoom });
         res.status(200).json({ success: 'Room created successfully 😃', room: newRoom, player: newPlayer });
-        req.app.io.emit('roomUpdate');
     }
 };
 
@@ -57,7 +61,7 @@ export const testIfPlayerNameIsFree = async(req, res) => {
         if (roomIndex === -1)
             return res.status(202).json({ error: 'Room not found 😢' });
         status = playerList.every(player => {
-            if (roomList[roomIndex].playersId.includes(player.id) && data.playerName === player.name) {
+            if (regex.test(data.playerName) === false || roomList[roomIndex].playersId.includes(player.id) && data.playerName === player.name) {
                 return false;
             } else {
                 return true;
@@ -121,6 +125,34 @@ export const deletePlayer = (socketId: string) => {
     return new Promise((resolve, reject) => {
         if (!socketId)
             reject('No socket Id');
+        let editRoom: Room;
+        playerList.forEach((player, indexPlayer) => {
+            if (player.id === socketId) {
+                roomList.forEach((room, indexRoom) => {
+                    if (room.id === player.roomId) {
+                        if (room.playersId.includes(socketId))
+                            room.playersId.splice(room.playersId.indexOf(socketId), 1);
+                        if (room.playersId.length > 0) {
+                            if (room.masterId === socketId) {
+                                // change master
+                                room.masterId = room.playersId[0];
+                                playerList.forEach(newMaster => {
+                                    if (newMaster.id === room.playersId[0])
+                                        room.masterName = newMaster.name;
+                                });
+                            }
+                            editRoom = room;
+                        }
+                        else {
+                            // delete room
+                            roomList.splice(indexRoom, 1);
+                        }
+                    }
+                });
+                playerList.slice(indexPlayer, 1);
+                resolve(editRoom);
+            }
+        });
     });
 };
 

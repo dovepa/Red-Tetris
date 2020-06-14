@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { hashKey } from './customUrlSerializer';
 import { HomeComponent } from './vues/home/home.component';
-import { PlayerComponent } from './vues/player/player.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
-import { UserRoadComponent } from './vues/user-road/user-road.component';
 import { PendingChangesGuardService } from './service/pending-changes-guard.service';
-import { GameComponent } from './components/game/game.component';
+import { ApprovalComponent } from './vues/approval/approval.component';
+import { GameComponent } from './vues/game/game.component';
+import { CreateComponent } from './vues/create/create.component';
+import { BestScoreComponent } from './vues/best-score/best-score.component';
 
 const routes: Routes = [
   {
@@ -15,7 +16,7 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: `${hashKey}:roomName[:playerName]`,
+    path: `${hashKey}:roomId[:playerName]`,
     component: GameComponent,
     pathMatch: 'full',
     canDeactivate: [PendingChangesGuardService]
@@ -26,13 +27,19 @@ const routes: Routes = [
     pathMatch: 'full',
   },
   {
-    path: 'play',
-    component: UserRoadComponent,
+    path: `approval`,
+    component: ApprovalComponent,
+    pathMatch: 'full',
+    canDeactivate: [PendingChangesGuardService]
+  },
+  {
+    path: 'create',
+    component: CreateComponent,
     pathMatch: 'full',
   },
   {
     path: 'players',
-    component: PlayerComponent,
+    component: BestScoreComponent,
     pathMatch: 'full',
   },
   { path: '', redirectTo: '/home', pathMatch: 'full' },

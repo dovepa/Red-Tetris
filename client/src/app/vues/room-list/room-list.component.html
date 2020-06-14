@@ -8,7 +8,7 @@
                     <p class="lead ">Select a room for play, or create a new one.</p>
                 </div>
                 <div class="col-4">
-                    <a class="btn btn-info btn-lg float-right" routerLink='/play' role="button">Create a New
+                    <a class="btn btn-info btn-lg float-right" routerLink='/create' role="button">Create a New
                         Room</a>
                 </div>
             </div>
@@ -35,7 +35,7 @@
                         <div infinite-scroll (scrolled)="appendItems()" *ngIf="finalArray.length > 0">
                             <div class="list-group-item" *ngFor="let room of finalArray">
                                 <div class="row m-0 p-0">
-                                    <div class="col-2 centerH">{{room?.roomName}}</div>
+                                    <div class="col-2 centerH">{{room?.id}}</div>
                                     <div class="col-2 centerH">{{room?.masterName}}</div>
                                     <div class="col-2 centerH">{{room?.mode | mode}}</div>
                                     <div class="col-2 centerH">{{room?.playersId?.length}}</div>

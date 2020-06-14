@@ -1,21 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RoomService } from 'src/app/service/room.service';
-import { Room } from 'src/app/model/room.model';
-import { Player } from 'src/app/model/player.model';
 import { Subscription } from 'rxjs';
+import { Player } from 'src/app/model/player.model';
+import { Room } from 'src/app/model/room.model';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-user-road',
-  templateUrl: './user-road.component.html',
-  styleUrls: ['./user-road.component.scss']
+  selector: 'app-create',
+  templateUrl: './create.component.html',
+  styleUrls: ['./create.component.scss']
 })
-export class UserRoadComponent implements OnInit, OnDestroy {
+export class CreateComponent implements OnInit, OnDestroy {
 
   selectedRoom: string;
-  currentRoom: Room;
-  currentPlayer: Player;
-  waitlisted: boolean;
-
   subscription: Subscription;
 
   constructor(private readonly roomService: RoomService) {
@@ -24,9 +21,7 @@ export class UserRoadComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.selectedRoom = this.roomService.selectedRoomId;
-    this.currentPlayer = this.roomService.currentPlayer;
-    this.currentRoom = this.roomService.currentRoom;
-    console.log(this.currentRoom, this.currentPlayer, this.selectedRoom);
+    console.log('room id', this.selectedRoom);
   }
 
   ngOnDestroy() {
