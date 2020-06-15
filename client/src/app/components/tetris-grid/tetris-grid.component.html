@@ -50,7 +50,6 @@
         </div>
     </div>
 
-
     <div class="col" style="min-width: 340px;">
         <div (swipedown)="move('down')" (swipeup)="move('up')" (swipeleft)="move('left')" (swiperight)="move('right')"
             (tap)="move('downMax')" class="card border-success mb-3 centerDW" *ngIf="grid" style="width: 302px;">
@@ -77,7 +76,7 @@
             <div style="max-height: 550px; overflow-y: auto;">
                 <div class="list-group-item" [ngClass]="{'silver': player.id === roomService.currentPlayer.id}"
                     *ngFor="let player of roomService.currentPlayerList">
-                    <div class="row">
+                    <div class="row" [@bounce]='true'>
                         <div class="col-4 centerW">{{player.name}}</div>
                         <div class="col-4 centerW">{{player.score}}</div>
                         <div class="col-4 centerW">{{player.partWin}}</div>

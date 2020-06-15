@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import { Component, OnInit, HostListener, AfterViewChecked } from '@angular/core';
 import { TetrisGrid } from 'src/app/model/tetrisGrid.model';
 import { TetroMino } from 'src/app/model/tetromino.model';
 import * as utils from '../../utils';
@@ -11,7 +11,7 @@ import { RoomService } from 'src/app/service/room.service';
   templateUrl: './tetris-grid.component.html',
   styleUrls: ['./tetris-grid.component.scss']
 })
-export class TetrisGridComponent implements OnInit {
+export class TetrisGridComponent implements OnInit, AfterViewChecked {
 
   constructor(readonly roomService: RoomService,
               readonly tetrisService: TetrisService) {
@@ -46,9 +46,10 @@ export class TetrisGridComponent implements OnInit {
   grid: TetrisGrid;
   current: TetroMino;
 
-  aaa(e) { console.log(e); }
-
   ngOnInit(): void {
+  }
+
+  ngAfterViewChecked() {
   }
 
   @HostListener('window:keydown', ['$event'])
