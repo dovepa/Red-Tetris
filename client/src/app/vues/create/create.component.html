@@ -1,4 +1,4 @@
 <div class="container-fluid">
-    <app-create-room *ngIf="!selectedRoom"></app-create-room>
-    <app-create-player *ngIf="selectedRoom"></app-create-player>
+    <app-create-room *ngIf="!roomService.selectedRoomId"></app-create-room>
+    <app-create-player *ngIf="roomService.selectedRoomId"></app-create-player>
 </div>

@@ -20,6 +20,7 @@ export class RoomService {
   public selectedRoomId: string;
   public currentRoom: Room;
   public currentPlayer: Player;
+  public currentPlayerList: Player[];
 
   constructor(private readonly toastService: ToastService,
               private readonly socketService: SocketService,
@@ -28,28 +29,43 @@ export class RoomService {
               private readonly socket: Socket) {
 
     this.socket.on('updatePlayer', data => {
-      if (this.currentPlayer && this.currentPlayer.id
-        && data && data.player && data.player.id && data.player.id === this.currentPlayer.id) {
-        utils.log('Socket :: updatePlayer service', data, this.currentPlayer);
-        this.currentPlayer = data.player;
-        this.runUpdateCurrentData();
+      if (data && data.player && data.player.id) {
+        if (this.currentRoom && this.currentRoom.id && this.currentRoom.playersId
+          && this.currentRoom.playersId.includes(data.player.id)) {
+          const index = this.currentPlayerList.findIndex(player => player.id === data.player.id);
+          if (index === -1) {
+            utils.error('No player index...');
+          }
+          this.currentPlayerList[index] = data.player;
+        }
+        if (this.currentPlayer && this.currentPlayer.id
+          && data.player.id === this.currentPlayer.id) {
+          utils.log('Socket :: updatePlayer service', data, this.currentPlayer);
+          this.currentPlayer = data.player;
+        }
       }
     });
 
-    this.socket.on('updateRoom', data => {
+    this.socket.on('updateRoom', async (data) => {
       if (data && data.room && data.room.id && this.currentRoom
         && this.currentRoom.id && data.room.id === this.currentRoom.id) {
         utils.log('Socket :: updateRoom service', data, this.currentRoom);
         this.currentRoom = data.room;
-        this.runUpdateCurrentData();
+        await this.populatePlayerList();
       }
     });
   }
 
-  private updateCurrentData = new Subject<any>();
-  updateCurrentDataObs = this.updateCurrentData.asObservable();
-  runUpdateCurrentData() {
-    this.updateCurrentData.next();
+  async populatePlayerList() {
+    console.log('load player list ');
+    this.currentPlayerList = [];
+    this.currentRoom.playersId.forEach(async (id) => {
+      const player = await this.getPlayer(id);
+      if (player) {
+        this.currentPlayerList.push(player);
+      }
+    });
+    console.log(this.currentPlayerList);
   }
 
   goToGame() {
@@ -60,7 +76,6 @@ export class RoomService {
     this.selectedRoomId = undefined;
     this.currentRoom = undefined;
     this.currentPlayer = undefined;
-    this.runUpdateCurrentData();
   }
 
   async testIfRoomIdIsFree(name: string): Promise<boolean> {
@@ -108,7 +123,6 @@ export class RoomService {
           if (res.data.success) {
             this.currentPlayer = res.data.player;
             this.currentRoom = res.data.room;
-            this.runUpdateCurrentData();
             resolve(res.data.success);
           }
           else if (res.data.error) {
@@ -127,7 +141,6 @@ export class RoomService {
           if (res.data.success && res.data.player) {
             this.currentPlayer = res.data.player;
             this.currentRoom = undefined;
-            this.runUpdateCurrentData();
             resolve(res.data.success);
           }
           else if (res.data.error) {

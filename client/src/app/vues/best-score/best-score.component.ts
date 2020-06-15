@@ -17,6 +17,7 @@ export class BestScoreComponent implements OnInit {
   error: boolean;
 
   constructor() {
+
     this.sum = 0;
     this.arrayTmp = this.listPlayers;
     this.appendItems();

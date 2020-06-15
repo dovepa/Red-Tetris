@@ -13,7 +13,6 @@ import { Socket } from 'ngx-socket-io';
 })
 export class GameComponent implements OnInit {
 
-  playerList: Player[];
   paramRoomId: string;
   paramPlayerName: string;
 
@@ -24,12 +23,10 @@ export class GameComponent implements OnInit {
     this.reset = reset;
   }
 
-  constructor(private readonly roomService: RoomService,
+  constructor(readonly roomService: RoomService,
               private readonly toastService: ToastService,
               private readonly socket: Socket,
               private readonly router: Router) {
-    this.playerList = [];
-
     this.socket.on('userKnock', data => {
       if (this.roomService.currentRoom && data.roomId === this.roomService.currentRoom.id
         && this.roomService.currentRoom.masterId === this.roomService.currentPlayer.id) {
@@ -39,10 +36,6 @@ export class GameComponent implements OnInit {
 
   }
 
-  async getPlayerList() {
-    this.playerList = await this.roomService.getPlayerList('dd');
-    this.playerList.sort((a, b) => (b.score - a.score));
-  }
 
 
   ngOnInit(): void {

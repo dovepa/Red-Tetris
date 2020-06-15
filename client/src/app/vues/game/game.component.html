@@ -3,14 +3,26 @@
     <div class="col-12 col-sm-10 mt-5">
         <div class="jumbotron container">
             <h1 class="display-3">Tetris Game :</h1>
-            <div class="row mt-3">
-                <div class="col-12 col-xl-9 centerDW">
-                    <app-tetris-grid></app-tetris-grid>
-                </div>
-                <div class="col-12 col-xl-3">
-                    <app-score></app-score>
-                </div>
-            </div>
+            <app-tetris-grid></app-tetris-grid>
         </div>
     </div>
 </div>
+
+
+<!-- 
+<div class="col-12 col-md-3">
+    <div class="row  mb-3" *ngIf="me === room.master">
+        <div class="col-12">
+            <div class="btn-group btn-group-toggle" style="width: 100%" data-toggle="buttons">
+                <label class="btn btn-primary active">
+                    <input type="radio" value='solo' autocomplete="off">
+                    Solo
+                </label>
+                <label class="btn btn-primary">
+                    <input type="radio" value='multiplayer' autocomplete="off">
+                    Multiplayer
+                </label>
+            </div>
+        </div>
+    </div>
+</div> -->

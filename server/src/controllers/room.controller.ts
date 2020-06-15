@@ -168,12 +168,16 @@ export const getPlayer = async(req, res) => {
     const data = req.body;
     if (!data.id)
         res.status(202).json({ error: 'Bad Request.' });
+    let playerTmp;
     playerList.forEach(player => {
         if (player.id === data.id) {
-            return res.status(200).json(player);
+            playerTmp = player;
         }
     });
-    res.status(202).json({ error: 'Player not found.' });
+    if (playerTmp)
+        res.status(200).json(playerTmp);
+    else
+        res.status(202).json({ error: 'Player not found.' });
 };
 
 export const getAllPlayerScores = async(req, res) => {

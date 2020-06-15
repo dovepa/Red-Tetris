@@ -4,6 +4,7 @@ import { TetroMino } from 'src/app/model/tetromino.model';
 import * as utils from '../../utils';
 import { TetrisService } from 'src/app/service/tetris.service';
 import { Room } from 'src/app/model/room.model';
+import { RoomService } from 'src/app/service/room.service';
 
 @Component({
   selector: 'app-tetris-grid',
@@ -12,7 +13,8 @@ import { Room } from 'src/app/model/room.model';
 })
 export class TetrisGridComponent implements OnInit {
 
-  constructor(readonly tetrisService: TetrisService) {
+  constructor(readonly roomService: RoomService,
+              readonly tetrisService: TetrisService) {
     this.grid = new TetrisGrid(10, 20);
     this.grid.shape[19][5] = 3;
 
@@ -43,6 +45,8 @@ export class TetrisGridComponent implements OnInit {
   tetrominoList: TetroMino[];
   grid: TetrisGrid;
   current: TetroMino;
+
+  aaa(e) { console.log(e); }
 
   ngOnInit(): void {
   }

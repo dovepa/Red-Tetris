@@ -23,8 +23,8 @@ import { ModalComponent } from './components/modal/modal.component';
 import { CreateComponent } from './vues/create/create.component';
 import { GameComponent } from './vues/game/game.component';
 import { ApprovalComponent } from './vues/approval/approval.component';
-import { ScoreComponent } from './components/score/score.component';
 import { BestScoreComponent } from './vues/best-score/best-score.component';
+import { HammerModule } from '@angular/platform-browser';
 
 const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
 
@@ -44,11 +44,11 @@ const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
     ApprovalComponent,
     ModalComponent,
     CreateComponent,
-    ScoreComponent,
     BestScoreComponent,
   ],
   imports: [
     BrowserModule,
+    HammerModule,
     AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
