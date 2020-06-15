@@ -18,10 +18,10 @@
                         <div class="card-header">
                             <div class="container-fluid">
                                 <div class="row">
-                                    <div class="col-2 centerH">Room Name</div>
-                                    <div class="col-2 centerH">Master</div>
-                                    <div class="col-2 centerH">Mode</div>
-                                    <div class="col-2 centerH">Players</div>
+                                    <div class="col-7 col-sm-2 centerH">Room Name</div>
+                                    <div class="d-none d-sm-block col-2 centerH">Master</div>
+                                    <div class="d-none d-sm-block col-2 centerH">Mode</div>
+                                    <div class="d-none d-sm-block col-2 centerH">Players</div>
                                     <div class="col-4">
                                         <input maxlength="30" [(ngModel)]="search" [ngClass]="{'is-invalid' : error}"
                                             (ngModelChange)='searchRoom()' type="text" class="form-control"
@@ -35,10 +35,10 @@
                         <div infinite-scroll (scrolled)="appendItems()" *ngIf="finalArray.length > 0">
                             <div class="list-group-item" *ngFor="let room of finalArray">
                                 <div class="row m-0 p-0">
-                                    <div class="col-2 centerH">{{room?.id}}</div>
-                                    <div class="col-2 centerH">{{room?.masterName}}</div>
-                                    <div class="col-2 centerH">{{room?.mode | mode}}</div>
-                                    <div class="col-2 centerH">{{room?.playersId?.length}}</div>
+                                    <div class="col-7 col-sm-2 centerH">{{room?.id}}</div>
+                                    <div class="d-none d-sm-block col-2 centerH">{{room?.masterName}}</div>
+                                    <div class="d-none d-sm-block col-2 centerH">{{room?.mode | mode}}</div>
+                                    <div class="d-none d-sm-block col-2 centerH">{{room?.playersId?.length}}</div>
                                     <div class="col-4" *ngIf="room.mode > 0">
                                         <button *ngIf="room.isPlaying !== true" (click)='selectRoom(room.id)'
                                             type="button" class="btn btn-success float-right">

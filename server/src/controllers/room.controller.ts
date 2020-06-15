@@ -114,11 +114,13 @@ export const createPlayer = async(req, res) => {
             return res.status(202);
         }
         const newPlayer = new Player(data.roomId, data.player.name, data.player.id);
-        newPlayer.approval = true;
-        roomList[roomIndex].playersId.push(newPlayer.id);
-        playerList.push(newPlayer);
-        req.app.io.emit('userKnockSuccess', { room: roomList[roomIndex], player: newPlayer, success: 'RoomMaster let you enter 🤠' });
-        req.app.io.emit('updatePlayer', { player: newPlayer });
+        if (roomList[roomIndex].playersId.includes(newPlayer.id) === false) {
+            newPlayer.approval = true;
+            roomList[roomIndex].playersId.push(newPlayer.id);
+            playerList.push(newPlayer);
+            req.app.io.emit('userKnockSuccess', { room: roomList[roomIndex], player: newPlayer, success: 'RoomMaster let you enter 🤠' });
+            req.app.io.emit('updatePlayer', { player: newPlayer });
+        }
         req.app.io.emit('updateRoom', { room: roomList[roomIndex] });
     }
     return res.status(200);

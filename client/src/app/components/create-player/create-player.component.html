@@ -3,18 +3,18 @@
     <div class="col-12 col-sm-10 col-md-8 mt-5">
         <div class="jumbotron container">
             <h1 class="display-3">Create a new Player :</h1>
-            <div class="card border-primary centerDW" style="max-width: 70%">
+            <div class="card border-primary centerDW">
                 <div class="card-header">
                     <p class="lead centerH">To create a new player, please fill in the form below.</p>
                 </div>
                 <div class="list-group-item">
                     <div class="row">
-                        <div class="col-4 centerH">
+                        <div class="d-none d-sm-block col-4 centerH">
                             Your Name :
                         </div>
-                        <div class="col-8">
+                        <div class="col-12 col-sm-8">
                             <input maxlength="30" type="text" [(ngModel)]="playerName"
-                                (ngModelChange)='verifPlayerName()' class="form-control" placeholder="Name"
+                                (ngModelChange)='verifPlayerName()' class="form-control" placeholder="Your Name"
                                 pattern="[a-zA-Z ]*"
                                 [ngClass]="{'is-valid': playerNameStatus === 1, 'is-invalid' : playerNameStatus  > 1}" />
                             <div *ngIf="playerNameStatus === 1" class="valid-feedback">Success! This name is good.</div>
