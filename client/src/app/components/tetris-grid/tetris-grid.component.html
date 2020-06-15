@@ -52,7 +52,7 @@
 
 
     <div class="col" style="min-width: 340px;">
-        <div (pandown)="aaa('down')" (panup)="aaa('up')" (swipeleft)="aaa('left')" (swiperight)="aaa('right')"
+        <div (pandown)="move('down')" (panup)="move('up')" (swipeleft)="move('left')" (swiperight)="move('right')"
             class="card border-success mb-3 centerDW" *ngIf="grid" style="width: 302px;">
             <div class="container-fluid p-0 m-0">
                 <div class="row p-0 m-0" *ngFor="let rows of grid.shape">
