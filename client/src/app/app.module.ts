@@ -25,8 +25,15 @@ import { GameComponent } from './vues/game/game.component';
 import { ApprovalComponent } from './vues/approval/approval.component';
 import { BestScoreComponent } from './vues/best-score/best-score.component';
 import { HammerModule } from '@angular/platform-browser';
-
+import * as Hammer from 'hammerjs';
+import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
+
+export class MyHammerConfig extends HammerGestureConfig {
+  overrides = {
+    swipe: { direction: Hammer.DIRECTION_ALL },
+  } as any;
+}
 
 @NgModule({
   declarations: [
@@ -56,7 +63,11 @@ const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
     NgbModule,
     SocketIoModule.forRoot(config)
   ],
-  providers: [{ provide: UrlSerializer, useClass: CustomUrlSerializer }],
+  providers: [{ provide: UrlSerializer, useClass: CustomUrlSerializer },
+  {
+    provide: HAMMER_GESTURE_CONFIG,
+    useClass: MyHammerConfig,
+  }],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
