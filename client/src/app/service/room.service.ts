@@ -16,7 +16,7 @@ import { hashKey } from '../customUrlSerializer';
   providedIn: 'root'
 })
 export class RoomService {
-
+  // test
   public selectedRoomId: string;
   public currentRoom: Room;
   public currentPlayer: Player;
