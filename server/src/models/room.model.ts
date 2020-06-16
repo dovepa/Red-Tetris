@@ -13,5 +13,7 @@ export class Room {
     constructor(roomId: string, mode: number) {
         this.mode = mode;
         this.id = roomId;
+        this.isPlaying = false;
+        this.pause = false;
     }
 }

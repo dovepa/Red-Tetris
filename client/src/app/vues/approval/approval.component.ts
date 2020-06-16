@@ -28,6 +28,7 @@ export class ApprovalComponent implements OnInit, OnDestroy {
               private readonly roomService: RoomService,
               private readonly socket: Socket) {
     this.percent = 0;
+
     this.socket.on('userKnockSuccess', data => {
       if (this.roomService.currentPlayer && data.player.id === this.roomService.currentPlayer.id && data.room) {
         if (data.error) {

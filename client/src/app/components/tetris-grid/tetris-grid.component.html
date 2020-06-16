@@ -76,7 +76,7 @@
             <div style="max-height: 550px; overflow-y: auto;">
                 <div class="list-group-item" [ngClass]="{'silver': player.id === roomService.currentPlayer.id}"
                     *ngFor="let player of roomService.currentPlayerList">
-                    <div class="row" [@bounce]='true'>
+                    <div class="row">
                         <div class="col-4 centerW">{{player.name}}</div>
                         <div class="col-4 centerW">{{player.score}}</div>
                         <div class="col-4 centerW">{{player.partWin}}</div>

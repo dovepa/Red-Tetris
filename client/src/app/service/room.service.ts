@@ -16,7 +16,6 @@ import { hashKey } from '../customUrlSerializer';
   providedIn: 'root'
 })
 export class RoomService {
-  // test
   public selectedRoomId: string;
   public currentRoom: Room;
   public currentPlayer: Player;
@@ -57,7 +56,6 @@ export class RoomService {
   }
 
   async populatePlayerList() {
-    console.log('load player list ');
     this.currentPlayerList = [];
     this.currentRoom.playersId.forEach(async (id) => {
       const player = await this.getPlayer(id);
@@ -65,7 +63,6 @@ export class RoomService {
         this.currentPlayerList.push(player);
       }
     });
-    console.log(this.currentPlayerList);
   }
 
   goToGame() {

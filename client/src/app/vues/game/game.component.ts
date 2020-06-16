@@ -27,13 +27,13 @@ export class GameComponent implements OnInit {
               private readonly toastService: ToastService,
               private readonly socket: Socket,
               private readonly router: Router) {
+
     this.socket.on('userKnock', data => {
       if (this.roomService.currentRoom && data.roomId === this.roomService.currentRoom.id
         && this.roomService.currentRoom.masterId === this.roomService.currentPlayer.id) {
         this.roomService.userKnock(data.player);
       }
     });
-
   }
 
 
