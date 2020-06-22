@@ -49,7 +49,7 @@
             <div *ngIf="roomService.currentRoom.isPlaying" class="card-header">Next : </div>
             <div class="row" *ngIf="roomService.currentRoom.isPlaying">
                 <div class="col-4  col-md-12  "
-                    *ngFor="let tetromino of roomService.currentPlayer.tetrominoList.slice(1,5)">
+                    *ngFor="let tetromino of roomService.currentPlayer.tetrominoList.slice(1,4)">
                     <div class="card border-success m-2 centerDW animate__animated  animate__jackInTheBox" [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
                         'height' : (tetromino.matrix * 30 + 2) +'px'}">
                         <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
