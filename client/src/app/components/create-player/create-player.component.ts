@@ -17,22 +17,25 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
   isPlaying: boolean;
   timerEvent: number | undefined;
 
+  userEmit = false;
+
   constructor(private readonly roomService: RoomService,
               private readonly toastService: ToastService,
               private readonly router: Router,
               private readonly socket: Socket) {
 
-    this.socket.on('playerUpdate', roomId => {
-      if (this.roomService.selectedRoomId === roomId) {
-        this.verifPlayerName();
-      }
-    });
+    this.socket.on('updateRoom', this.updateRoom.bind(this));
+  }
 
-    this.socket.on('updateRoom', data => {
-      if (data && data.room && data.room.id === this.roomService.selectedRoomId) {
-        this.verifPlayerName();
-      }
-    });
+  updateRoom(data) {
+    if (data && data.room && data.room.id === this.roomService.selectedRoomId) {
+      this.verifPlayerName();
+    }
+  }
+
+  ngOnDestroy() {
+    this.roomService.selectedRoomId = undefined;
+    this.socket.removeListener('updateRoom', this.updateRoom.bind(this));
   }
 
   ngOnInit(): void {
@@ -65,9 +68,11 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
 
           })
           .catch(err => {
-            this.toastService.createMessage('error', err);
-            this.router.navigate(['room']);
-            this.roomService.selectedRoomId = undefined;
+            if (this.userEmit === false) {
+              this.toastService.createMessage('error', err);
+              this.roomService.selectedRoomId = undefined;
+              this.router.navigate(['create']);
+            }
           });
       }, timer);
     }
@@ -76,13 +81,13 @@ export class CreatePlayerComponent implements OnInit, OnDestroy {
   createPlayer() {
     this.roomService.createPlayer(this.playerName)
       .then(res => {
+        this.userEmit = true;
+        window.clearInterval(this.timerEvent);
         this.toastService.createMessage('success', res);
-        this.router.navigate(['approval']);
+        this.roomService.goToGame();
       })
       .catch(err => { this.toastService.createMessage('error', err); });
   }
 
-  ngOnDestroy() {
-    this.roomService.selectedRoomId = undefined;
-  }
+
 }

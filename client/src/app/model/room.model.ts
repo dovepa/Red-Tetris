@@ -7,7 +7,7 @@ export class Room {
     isPlaying: boolean;
     pause: boolean;
     mode: number;
-    tetrominoList: TetroMino[];
+    isDeleted: boolean;
     playersId: string[];
     masterId: string;
     masterName: string;

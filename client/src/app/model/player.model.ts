@@ -1,13 +1,22 @@
 import { TetrisGrid } from './tetrisGrid.model';
+import { TetroMino } from './tetromino.model';
+
+export interface Score {
+    name: string;
+    roomId: string;
+    score: number;
+    date: number;
+}
 
 export class Player {
     id: string;
     name: string;
     roomId; string;
     grid: TetrisGrid;
-    alive: boolean;
+    tetrominoList: TetroMino[];
     isPlaying: boolean;
-    approval: boolean;
+    isDeleted: boolean;
+    scores: { score: number, date: number }[];
     score: number;
     partWin: number;
 

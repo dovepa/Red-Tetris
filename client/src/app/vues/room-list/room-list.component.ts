@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
   templateUrl: './room-list.component.html',
   styleUrls: ['./room-list.component.scss']
 })
-export class RoomListComponent implements OnInit {
+export class RoomListComponent implements OnInit, OnDestroy {
 
   sum: number;
   search: string;
@@ -20,6 +20,7 @@ export class RoomListComponent implements OnInit {
   error: boolean;
   searchTmp: Room[];
 
+  handler;
   constructor(private readonly roomService: RoomService,
               private readonly socket: Socket,
               private readonly router: Router) {
@@ -31,16 +32,15 @@ export class RoomListComponent implements OnInit {
     this.sum = 0;
     this.appendItems();
 
-    this.socket.on('updateRoom', async (data) => {
-      await this.getRooms();
-      if (data && data.room) {
-        this.roomList.forEach(r => {
-          if (r.id === data.room.id) {
-            r = data.room;
-          }
-        });
-      }
-    });
+    this.socket.on('updateRoom', this.updateRoom.bind(this));
+  }
+
+  async updateRoom(data) {
+    await this.getRooms();
+  }
+
+  ngOnDestroy() {
+    this.socket.removeListener('updateRoom', this.updateRoom.bind(this));
   }
 
   async getRooms() {

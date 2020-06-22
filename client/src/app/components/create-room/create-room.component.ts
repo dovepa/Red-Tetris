@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as utils from '../../utils';
 import { RoomService } from 'src/app/service/room.service';
 import { ToastService } from 'src/app/service/toast.service';
@@ -9,7 +9,7 @@ import { Socket } from 'ngx-socket-io';
   templateUrl: './create-room.component.html',
   styleUrls: ['./create-room.component.scss']
 })
-export class CreateRoomComponent implements OnInit {
+export class CreateRoomComponent implements OnInit, OnDestroy {
 
   mode: string;
   playerName = '';
@@ -17,7 +17,6 @@ export class CreateRoomComponent implements OnInit {
   roomId = '';
   roomIdStatus: number;
   timerEvent: number | undefined;
-
   constructor(private readonly roomService: RoomService,
               private readonly toastService: ToastService,
               private readonly socket: Socket
@@ -26,11 +25,17 @@ export class CreateRoomComponent implements OnInit {
     this.playerNameStatus = 0;
     this.mode = 'multiplayer';
 
-    this.socket.on('updateRoom', async (data) => {
-      if (data && data.room && data.room.id && data.room.id === this.roomService.selectedRoomId) {
-        this.verifRoomId();
-      }
-    });
+    this.socket.on('updateRoom', this.updateRoom.bind(this));
+  }
+
+  async updateRoom(data) {
+    if (this.roomService && data && data.room && data.room.id && data.room.id === this.roomService.selectedRoomId && !data.room.isDeleted) {
+      this.verifRoomId();
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.socket.removeListener('updateRoom', this.updateRoom.bind(this));
   }
 
 

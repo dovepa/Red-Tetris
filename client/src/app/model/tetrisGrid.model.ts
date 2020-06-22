@@ -3,7 +3,6 @@ import { TetroMino } from './tetromino.model';
 
 export class TetrisGrid {
     shape: number[][];
-    players: Player[];
     cols: number;
     rows: number;
 

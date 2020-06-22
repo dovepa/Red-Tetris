@@ -1,33 +1,33 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { NgbModal, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from '../components/modal/modal.component';
 import { Subject } from 'rxjs';
 import * as utils from './../utils';
 import { Socket } from 'ngx-socket-io';
-import { SocketService } from './socket.service';
+import axios from 'axios';
 import { GameComponent } from '../vues/game/game.component';
-import { ApprovalComponent } from '../vues/approval/approval.component';
 import { RoomService } from './room.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class PendingChangesGuardService {
+export class PendingChangesGuardService implements OnDestroy {
 
 
   constructor(private modalService: NgbModal,
-              private readonly socketService: SocketService,
               private readonly socket: Socket,
               private readonly roomService: RoomService) { }
 
-  resetAll() {
-    this.roomService.resetAll();
-    this.socketService.resetSocket();
+
+  ngOnDestroy() {
+    this.socket.removeAllListeners();
   }
 
-  canDeactivate(component: GameComponent | ApprovalComponent) {
+
+
+  canDeactivate(component: GameComponent) {
     if (component.reset) {
-      this.resetAll();
+      this.roomService.resetAll();
     }
     if (component.exit) {
       return component.exit;
@@ -41,7 +41,7 @@ export class PendingChangesGuardService {
     subject = modalRef.componentInstance.subject;
     return modalRef.result.then(response => {
       if (response) {
-        this.resetAll();
+        this.roomService.resetAll();
       }
       utils.log(`Pending changes guard ${response}`);
       return response;

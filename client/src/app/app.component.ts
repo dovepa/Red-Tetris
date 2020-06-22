@@ -13,11 +13,5 @@ import { PendingChangesGuardService } from './service/pending-changes-guard.serv
 export class AppComponent {
   title = 'Red-Tetris';
 
-  constructor(private readonly socket: Socket,
-              private readonly socketService: SocketService) {
-    socket.on('connect', () => {
-      utils.log(`Socket id :: ${this.socket.ioSocket.id}`);
-      this.socketService.socketId = this.socket.ioSocket.id;
-    });
-  }
+  constructor(private readonly socketService: SocketService) { }
 }

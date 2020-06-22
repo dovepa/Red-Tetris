@@ -2,6 +2,7 @@ import * as utils from '../utils';
 
 export class TetroMino {
     shape: number[][];
+    cicle: boolean;
     sign: number;
     position: { x: number, y: number, ymax: number };
     readonly matrix: number;
@@ -27,22 +28,4 @@ export class TetroMino {
         this.position = { x: 3, y: 0, ymax: 0 };
     }
 
-    move(where: string) {
-        switch (where) {
-            case 'left':
-                this.position.x--;
-                break;
-            case 'right':
-                this.position.x++;
-                break;
-            case 'down':
-                this.position.y++;
-                break;
-            case 'downMax':
-                this.position.y = this.position.ymax;
-                break;
-            default:
-                break;
-        }
-    }
 }

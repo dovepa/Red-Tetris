@@ -1,20 +1,19 @@
 import { Player } from './player.model';
 
 export class TetrisGrid {
-    grid: number[][];
-    players: Player[];
+    shape: number[][];
+    cols: number;
+    rows: number;
 
     constructor(cols: number, rows: number) {
-        this.grid = [];
+        this.rows = rows;
+        this.cols = cols;
+        this.shape = [];
         while (rows) {
-            let i = cols;
-            const line: number[] = [];
-            while (i) {
-                line.push(0);
-                i--;
-            }
-            this.grid.push(line);
+            const line: number[] = new Array(cols).fill(0);
+            this.shape.push(line);
             rows--;
         }
     }
 }
+

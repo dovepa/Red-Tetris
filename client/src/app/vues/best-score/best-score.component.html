@@ -5,7 +5,7 @@
             <h1 class="display-3">Best Players Score</h1>
             <div class="row mt-3">
                 <div class="col-12">
-                    <div class="card border-primary">
+                    <div class="card border-primary" *ngIf="listPlayers">
                         <div class="card-header">
                             <div class="container-fluid">
                                 <div class="row">
@@ -23,13 +23,14 @@
                             </div>
                         </div>
                         <div infinite-scroll (scrolled)="appendItems()">
-                            <div class="list-group-item" [ngClass]="{'gold': listPlayers.indexOf(player) === 0,
+                            <div class="list-group-item" [ngClass]="{'gold':  listPlayers.indexOf(player) === 0,
                             'silver': listPlayers.indexOf(player) === 1,
                             'bronze': listPlayers.indexOf(player) === 2}" *ngFor="let player of finalArray">
                                 <div class="row m-0 p-0">
-                                    <div class="col-4 centerH">{{player?.name}} </div>
-                                    <div class="col-4 centerH">{{player?.roomId}}</div>
-                                    <div class="col-3 centerH">{{player?.scorindDate}}</div>
+                                    <div class="col-3 centerH">{{player?.name}} </div>
+                                    <div class="col-3 centerH">{{player?.roomId}}</div>
+                                    <div class="col-3 centerH">{{player?.date}}</div>
+                                    <div class="col-2 centerH">{{player?.score}}</div>
                                     <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 0">🥇</div>
                                     <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 1">🥈</div>
                                     <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 2">🥉</div>

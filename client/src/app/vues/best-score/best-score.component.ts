@@ -1,30 +1,43 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as utils from '../../utils';
-import { Player } from 'src/app/model/player.model';
+import { Player, Score } from 'src/app/model/player.model';
+import { Socket } from 'ngx-socket-io';
+import { RoomService } from 'src/app/service/room.service';
 
 @Component({
   selector: 'app-best-score',
   templateUrl: './best-score.component.html',
   styleUrls: ['./best-score.component.scss']
 })
-export class BestScoreComponent implements OnInit {
+export class BestScoreComponent implements OnInit, OnDestroy {
 
   sum: number;
-  listPlayers: Player[] = [];
-  arrayTmp: Player[] = [];
+  listPlayers: Score[];
+  arrayTmp: Score[] = [];
   search: string;
-  finalArray: Player[] = [];
+  finalArray: Score[] = [];
   error: boolean;
 
-  constructor() {
-
-    this.sum = 0;
-    this.arrayTmp = this.listPlayers;
-    this.appendItems();
+  constructor(private readonly socket: Socket,
+              private readonly roomService: RoomService) {
+    this.socket.on('updatePlayer', this.findPlayersScore.bind(this));
+    this.findPlayersScore();
   }
 
+  ngOnDestroy() {
+    this.socket.removeListener('updatePlayer', this.findPlayersScore.bind(this));
+  }
 
-  searchPlayer() {
+  findPlayersScore() {
+    this.roomService.getPlayerListScore().then((res: Score[]) => {
+      this.sum = 0;
+      this.listPlayers = res;
+      this.arrayTmp = res;
+      this.appendItems();
+    });
+  }
+
+  async searchPlayer() {
     this.error = false;
     if (utils.regex.test(this.search) === false) {
       this.error = true;
@@ -50,7 +63,7 @@ export class BestScoreComponent implements OnInit {
     this.appendItems();
   }
 
-  appendItems() {
+  async appendItems() {
     this.sum += 20;
     const start = this.finalArray.length.valueOf();
     for (let i = 0; i < this.sum; ++i) {

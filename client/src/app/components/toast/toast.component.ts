@@ -23,7 +23,7 @@ export class ToastComponent implements OnInit {
             if (toast.percent <= 0) {
               toast.open = false;
             } else {
-              toast.percent = toast.percent - 2;
+              toast.percent = toast.percent - 5;
             }
           }
         });

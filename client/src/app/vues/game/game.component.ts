@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Player } from 'src/app/model/player.model';
 import { RoomService } from 'src/app/service/room.service';
 import { Router } from '@angular/router';
 import * as utils from '../../utils';
 import { ToastService } from 'src/app/service/toast.service';
 import { Socket } from 'ngx-socket-io';
+import { SocketService } from 'src/app/service/socket.service';
 
 @Component({
   selector: 'app-game',
@@ -18,6 +18,7 @@ export class GameComponent implements OnInit {
 
   exit = false;
   reset = false;
+
   changeGuard(exit: boolean = false, reset: boolean = false) {
     this.exit = exit;
     this.reset = reset;
@@ -25,30 +26,25 @@ export class GameComponent implements OnInit {
 
   constructor(readonly roomService: RoomService,
               private readonly toastService: ToastService,
+              private readonly socketService: SocketService,
               private readonly socket: Socket,
               private readonly router: Router) {
-
-    this.socket.on('userKnock', data => {
-      if (this.roomService.currentRoom && data.roomId === this.roomService.currentRoom.id
-        && this.roomService.currentRoom.masterId === this.roomService.currentPlayer.id) {
-        this.roomService.userKnock(data.player);
-      }
-    });
   }
-
 
 
   ngOnInit(): void {
     const url = this.router.url;
     if (utils.gameRegex.test(url) === false) {
       this.changeGuard(true, true);
-      this.router.navigate(['home']);
+      this.router.navigate(['room']);
       this.toastService.createMessage('error', 'Error on room link 😞');
     } else {
       this.paramRoomId = url.split('#')[1].split('[')[0];
       this.paramPlayerName = url.split('[')[1].split(']')[0];
       if (
         !this.roomService.currentPlayer
+        || !this.roomService.currentPlayer.grid
+        || !this.roomService.currentPlayer.grid.shape
         || !this.roomService.currentRoom
         || this.paramRoomId !== this.roomService.currentRoom.id
         || this.paramPlayerName !== this.roomService.currentPlayer.name
@@ -63,6 +59,5 @@ export class GameComponent implements OnInit {
       }
     }
   }
-
 
 }

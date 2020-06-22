@@ -4,7 +4,6 @@ import { hashKey } from './customUrlSerializer';
 import { HomeComponent } from './vues/home/home.component';
 import { RoomListComponent } from './vues/room-list/room-list.component';
 import { PendingChangesGuardService } from './service/pending-changes-guard.service';
-import { ApprovalComponent } from './vues/approval/approval.component';
 import { GameComponent } from './vues/game/game.component';
 import { CreateComponent } from './vues/create/create.component';
 import { BestScoreComponent } from './vues/best-score/best-score.component';
@@ -25,12 +24,6 @@ const routes: Routes = [
     path: 'room',
     component: RoomListComponent,
     pathMatch: 'full',
-  },
-  {
-    path: `approval`,
-    component: ApprovalComponent,
-    pathMatch: 'full',
-    canDeactivate: [PendingChangesGuardService]
   },
   {
     path: 'create',

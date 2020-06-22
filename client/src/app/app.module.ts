@@ -22,12 +22,12 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from './components/modal/modal.component';
 import { CreateComponent } from './vues/create/create.component';
 import { GameComponent } from './vues/game/game.component';
-import { ApprovalComponent } from './vues/approval/approval.component';
 import { BestScoreComponent } from './vues/best-score/best-score.component';
 import { HammerModule } from '@angular/platform-browser';
 import * as Hammer from 'hammerjs';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
 
 
 const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
@@ -51,10 +51,10 @@ export class MyHammerConfig extends HammerGestureConfig {
     ModePipe,
     CreatePlayerComponent,
     CreateComponent,
-    ApprovalComponent,
     ModalComponent,
     CreateComponent,
     BestScoreComponent,
+    AdminPanelComponent,
   ],
   imports: [
     BrowserModule,

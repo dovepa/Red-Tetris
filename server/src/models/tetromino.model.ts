@@ -2,24 +2,30 @@ import * as utils from '../utils';
 
 export class TetroMino {
     shape: number[][];
-    color: string;
-    letter: string;
-    turn: number;
+    sign: number;
+    cicle: boolean;
+    position: { x: number, y: number, ymax: number };
+    readonly matrix: number;
 
     constructor() {
-        const tetrominoList: [string, string, number[][]][] = [
-            ['Cyan', 'I', [[1, 1, 1, 1]]],
-            ['Yellow', 'O', [[2, 2], [2, 2]]],
-            ['Purple', 'T', [[3, 3, 3], [0, 3, 0]]],
-            ['Green', 'S', [[0, 4, 4], [4, 4, 0]]],
-            ['Red', 'Z', [[5, 5, 0], [0, 5, 5]]],
-            ['Blue', 'J', [[6, 0, 0], [6, 6, 6]]],
-            ['Orange', 'L', [[0, 0, 7], [7, 7, 7]]],
+        const tetrominoList: number[][][] = [
+            [[0, 0, 0, 0], [1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]],
+            [[7, 0, 0], [7, 7, 7], [0, 0, 0]],
+            [[0, 0, 6], [6, 6, 6], [0, 0, 0]],
+            [[2, 2], [2, 2]],
+            [[0, 4, 4], [4, 4, 0], [0, 0, 0]],
+            [[0, 3, 0], [3, 3, 3], [0, 0, 0]],
+            [[5, 5, 0], [0, 5, 5], [0, 0, 0]],
         ];
-        this.turn = utils.getRandomInt(4);
-        const randomTetro = utils.getRandomInt(7);
-        this.color = tetrominoList[randomTetro][0];
-        this.letter = tetrominoList[randomTetro][1];
-        this.shape = tetrominoList[randomTetro][2];
+        const randomTetro = utils.getRandomInt(tetrominoList.length);
+        this.shape = tetrominoList[randomTetro];
+        this.shape.forEach((row) => {
+            row.forEach((cube) => {
+                if (this.sign === undefined && cube !== 0) { this.sign = cube; }
+            });
+        });
+        this.matrix = this.shape.length;
+        this.position = { x: 3, y: 0, ymax: 0 };
     }
+
 }

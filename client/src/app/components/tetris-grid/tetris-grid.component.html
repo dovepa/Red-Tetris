@@ -1,18 +1,23 @@
-<div class="row mt-3">
+<div class="row mt-3" *ngIf="roomService.currentPlayer && roomService.currentRoom">
     <div class="d-none d-md-block col-md-4" style="max-width: 200px;">
-        <div class="d-none d-md-block card text-white bg-success mb-3" style="min-width: 140px" *ngIf="current">
-            <div class="card-header">Current :</div>
-            <div class="centerDW card border-success m-2 " [ngStyle]="{'width' : (current.matrix * 30 + 2) +'px',
-                        'height' : (current.matrix * 30 + 2) +'px'}">
-                <div class="row p-0 m-0 " *ngFor="let rows of current.shape">
+        <div class="d-none d-md-block card text-white bg-success mb-3" style="min-width: 140px"
+            *ngIf="roomService.currentPlayer.tetrominoList && roomService.currentPlayer.tetrominoList[0]">
+            <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Current : ❓</div>
+            <div *ngIf="roomService.currentRoom.isPlaying" class="card-header">Current :</div>
+            <div *ngIf="roomService.currentRoom.isPlaying" class="centerDW card border-success m-2 " [ngStyle]="{'width' : (roomService.currentPlayer.tetrominoList[0].matrix * 30 + 2) +'px',
+                        'height' : (roomService.currentPlayer.tetrominoList[0].matrix * 30 + 2) +'px'}">
+                <div class="row p-0 m-0 " *ngFor="let rows of roomService.currentPlayer.tetrominoList[0].shape">
                     <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows"></div>
                 </div>
             </div>
         </div>
-        <div class="card text-white bg-info mb-3" style="min-width: 140px">
-            <div class="card-header">Next :</div>
-            <div class="row">
-                <div class="col-4  col-md-12  " *ngFor="let tetromino of tetrominoList">
+        <div *ngIf="roomService.currentPlayer.tetrominoList" class="card text-white bg-info mb-3"
+            style="min-width: 140px">
+            <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Next : ❓</div>
+            <div *ngIf="roomService.currentRoom.isPlaying" class="card-header">Next : </div>
+            <div class="row" *ngIf="roomService.currentRoom.isPlaying">
+                <div class="col-4  col-md-12  "
+                    *ngFor="let tetromino of roomService.currentPlayer.tetrominoList.slice(1, 5)">
                     <div class="card border-success m-2 centerDW" [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
                         'height' : (tetromino.matrix * 30 + 2) +'px'}">
                         <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
@@ -25,19 +30,22 @@
         </div>
     </div>
     <div class="d-block d-md-none col-12">
-        <div class="d-none d-md-block card text-white bg-success mb-3" style="min-width: 140px" *ngIf="current">
+        <div class="d-none d-md-block card text-white bg-success mb-3" style="min-width: 140px"
+            *ngIf="roomService.currentPlayer.tetrominoList && roomService.currentPlayer.tetrominoList[0]">
             <div class="card-header">Current :</div>
-            <div class="centerDW card border-success m-2 " [ngStyle]="{'width' : (current.matrix * 30 + 2) +'px',
-                        'height' : (current.matrix * 30 + 2) +'px'}">
-                <div class="row p-0 m-0 " *ngFor="let rows of current.shape">
+            <div class="centerDW card border-success m-2 " [ngStyle]="{'width' : (roomService.currentPlayer.tetrominoList[0].matrix * 30 + 2) +'px',
+                        'height' : (roomService.currentPlayer.tetrominoList[0].matrix * 30 + 2) +'px'}">
+                <div class="row p-0 m-0 " *ngFor="let rows of roomService.currentPlayer.tetrominoList[0].shape">
                     <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows"></div>
                 </div>
             </div>
         </div>
-        <div class="card text-white bg-info mb-3" style="min-width: 140px">
+        <div *ngIf="roomService.currentPlayer.tetrominoList" class="card text-white bg-info mb-3"
+            style="min-width: 140px">
             <div class="card-header">Next :</div>
             <div class="row">
-                <div class="col-4  col-md-12  " *ngFor="let tetromino of tetrominoList">
+                <div class="col-4  col-md-12  "
+                    *ngFor="let tetromino of roomService.currentPlayer.tetrominoList.slice(1,5)">
                     <div class="card border-success m-2 centerDW" [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
                         'height' : (tetromino.matrix * 30 + 2) +'px'}">
                         <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
@@ -51,10 +59,19 @@
     </div>
 
     <div class="col" style="min-width: 340px;">
-        <div (swipedown)="move('down')" (swipeup)="move('up')" (swipeleft)="move('left')" (swiperight)="move('right')"
-            (tap)="move('downMax')" class="card border-success mb-3 centerDW" *ngIf="grid" style="width: 302px;">
+        <div *ngIf="!roomService.currentRoom.isPlaying && !roomService.currentRoom.pause"
+            class="card border-success mb-3 centerDW centerH" style="width: 302px; height: 602px;">
+            <p class="centerDW centerH">Waiting for roomMaster Start ⏯️</p>
+        </div>
+        <div *ngIf="roomService.currentRoom.isPlaying && roomService.currentRoom.pause"
+            class="card border-success mb-3 centerDW centerH" style="width: 302px; height: 602px;">
+            <p class="centerDW centerH">Room is ⏸️</p>
+        </div>
+        <div *ngIf="roomService.currentRoom.isPlaying && !roomService.currentRoom.pause && roomService.currentPlayer.grid"
+            (swipedown)="move('down')" (swipeup)="move('up')" (swipeleft)="move('left')" (swiperight)="move('right')"
+            (tap)="move('downMax')" class="card border-success mb-3 centerDW" style="width: 302px; height: 602px;">
             <div class="container-fluid p-0 m-0">
-                <div class="row p-0 m-0" *ngFor="let rows of grid.shape">
+                <div class="row p-0 m-0" *ngFor="let rows of roomService.currentPlayer.grid.shape">
                     <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}"
                         *ngFor="let cube of rows; let i = index">
                     </div>
@@ -64,22 +81,43 @@
     </div>
 
     <div class="col" style="min-width: 350px;">
+        <div class="row m-3">
+            <div class="col-6">
+                <app-admin-panel
+                    *ngIf="roomService.currentPlayer && roomService.currentPlayer.id === roomService.currentRoom.masterId">
+                </app-admin-panel>
+            </div>
+            <div class="col-6">
+                <button *ngIf="roomService.currentRoom.playersId.length > 1" routerLink='/home' type="button"
+                    class="btn btn-danger  btn-lg btn-block">Leave Room</button>
+                <button *ngIf="roomService.currentRoom.playersId.length === 1" routerLink='/home' type="button"
+                    class="btn btn-danger  btn-lg btn-block">Leave & Destroy Room</button>
+            </div>
+        </div>
+
         <div class="card border-info mb-3">
             <div class="card-header">List of room players</div>
             <div class="list-group-item">
                 <div class="row">
-                    <div class="col-4 centerW">Name</div>
-                    <div class="col-4 centerW">Score</div>
-                    <div class="col-4 centerW">Part Win</div>
+                    <div class="centerW  col-4">
+                        Name
+                    </div>
+                    <div class="centerW  col-4">Score
+                    </div>
+                    <div class="centerW  col-4">Part
+                        Win</div>
                 </div>
             </div>
             <div style="max-height: 550px; overflow-y: auto;">
                 <div class="list-group-item" [ngClass]="{'silver': player.id === roomService.currentPlayer.id}"
                     *ngFor="let player of roomService.currentPlayerList">
                     <div class="row">
-                        <div class="col-4 centerW">{{player.name}}</div>
-                        <div class="col-4 centerW">{{player.score}}</div>
-                        <div class="col-4 centerW">{{player.partWin}}</div>
+                        <div class="centerW col-4">
+                            {{player.name}}</div>
+                        <div class="centerW col-4">
+                            {{player.score}}</div>
+                        <div class="centerW col-4">
+                            {{player.partWin}}</div>
                     </div>
                 </div>
             </div>
