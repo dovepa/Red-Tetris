@@ -47,6 +47,7 @@ export const createRoom = async(req, res) => {
         newPlayer.grid = new TetrisGrid(10, 20);
         newPlayer.score = 0;
         newPlayer.partWin = 0;
+        newPlayer.tetrominoList = [];
         playerList.push(newPlayer);
         req.app.io.emit('updatePlayer', { player: newPlayer, room: newRoom });
         req.app.io.emit('updateRoom', { room: newRoom });
@@ -108,6 +109,7 @@ export const createPlayer = async(req, res) => {
             newPlayer.grid = new TetrisGrid(10, 20);
             newPlayer.score = 0;
             newPlayer.partWin = 0;
+            newPlayer.tetrominoList = [];
             roomList[indexRoom].playersId.push(newPlayer.id);
             playerList.push(newPlayer);
             req.app.io.emit('updatePlayer', { player: newPlayer, room: roomList[indexRoom] });

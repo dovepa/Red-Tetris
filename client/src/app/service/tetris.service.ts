@@ -8,6 +8,7 @@ import { TetrisGrid } from '../model/tetrisGrid.model';
 export class TetrisService {
   ghost = 80;
   watermark = 90;
+  destroy = 120;
 
   constructor() { }
 
@@ -25,9 +26,9 @@ export class TetrisService {
     });
   }
 
-  lastYValidPlace(shape: number[][], sign: number, grid: TetrisGrid, positionX: number): number {
-    let ymax = 0;
-    while (this.isValidPlace(shape, sign, grid, positionX, ymax + 1)) {
+  lastYValidPlace(tetro: TetroMino, grid: TetrisGrid) {
+    let ymax = tetro.position.y.valueOf();
+    while (this.isValidPlace(tetro.shape, tetro.sign, grid, tetro.position.x, ymax + 1)) {
       ymax++;
     }
     return ymax;
@@ -35,7 +36,10 @@ export class TetrisService {
 
   returnColor(cube: number): string {
     let color = '';
-    if (cube - this.watermark > 0) {
+    if (cube > this.destroy) {
+      cube = cube - this.destroy;
+      color = color.concat('animate__animated animate__bounceOut ');
+    } else if (cube - this.watermark > 0) {
       cube = cube - this.watermark;
     } else if (cube - this.ghost > 0) {
       color = color.concat('ghost ');
@@ -65,10 +69,10 @@ export class TetrisService {
     return a;
   }
 
-  draw(grid: TetrisGrid, tetro: TetroMino, final?: boolean): void {
-    tetro.position.ymax = this.lastYValidPlace(tetro.shape, tetro.sign, grid, tetro.position.x);
+  draw(grid: TetrisGrid, tetro: TetroMino): void {
+    tetro.position.ymax = this.lastYValidPlace(tetro, grid);
     // ghost
-    if (final === undefined && tetro.position.ymax > tetro.position.y) {
+    if (!tetro.lock && tetro.position.ymax > tetro.position.y) {
       grid.shape.forEach((rows, indexY) => {
         rows.forEach((cube, indexX) => {
           if (indexY >= tetro.position.ymax
@@ -89,7 +93,7 @@ export class TetrisService {
           && indexX >= tetro.position.x
           && indexX - tetro.position.x < tetro.matrix
           && tetro.shape[indexY - tetro.position.y][indexX - tetro.position.x] !== 0) {
-          if (final) {
+          if (tetro.lock) {
             rows[indexX] = tetro.shape[indexY - tetro.position.y][indexX - tetro.position.x];
           }
           else {

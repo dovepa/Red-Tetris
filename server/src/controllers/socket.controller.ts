@@ -18,11 +18,7 @@ const socketController = (io) => {
                         .then((res: any) => {
                             if (res.room)
                                 io.emit('updateRoom', { room: res.room });
-                            if (res.playerList)
-                                res.playerList.forEach(player => {
-                                    io.emit('updateTetris', { action: 'play', room: res.room });
-                                    io.emit('updatePlayer', { player, room: res.room });
-                                });
+                            io.emit('updateTetris', { action: 'play', room: res.room, tetrominoList: res.tetrominoList });
                         }).catch(err => {
                             io.emit('updateRoomAdmin', { err });
                         });
@@ -53,6 +49,20 @@ const socketController = (io) => {
                             io.emit('updateRoomAdmin', { err });
                         });
                 }
+            }
+        });
+
+        socket.on('newTetro', async(room: Room) => {
+            const currentRoomState = await roomCtrl.currentRoom(room.id);
+            if (currentRoomState === undefined) {
+                return io.emit('updateRoomAdmin', { error: 'Room id not found' });
+            } else {
+                tetrisCtrl.createTetromino()
+                    .then((res: any) => {
+                        io.emit('updateTetris', { action: 'newTetro', room: currentRoomState, tetrominoList: res });
+                    }).catch(err => {
+                        io.emit('updateRoomAdmin', { err });
+                    });
             }
         });
 

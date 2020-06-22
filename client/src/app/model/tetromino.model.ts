@@ -2,7 +2,7 @@ import * as utils from '../utils';
 
 export class TetroMino {
     shape: number[][];
-    cicle: boolean;
+    lock: boolean;
     sign: number;
     position: { x: number, y: number, ymax: number };
     readonly matrix: number;

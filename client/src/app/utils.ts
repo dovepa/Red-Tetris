@@ -3,6 +3,10 @@ import { environment } from '../environments/environment';
 export const regex = RegExp(/^[a-zA-Z0-9]*$/);
 export const gameRegex = RegExp(/^\/#[a-zA-Z0-9]*\[[a-zA-Z0-9]*\]$/);
 
+export const sleep = (ms) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+};
+
 export const urlServer = (): string => {
     let url = environment.serverAdress + environment.serverPort;
     if (environment.production) {
