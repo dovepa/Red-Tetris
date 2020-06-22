@@ -30,12 +30,12 @@
                                     <div class="col-3 centerH">{{player?.name}} </div>
                                     <div class="col-3 centerH">{{player?.roomId}}</div>
                                     <div class="col-3 centerH">{{player?.date}}</div>
-                                    <div class="col-2 centerH">{{player?.score}}</div>
+                                    <div class="col-2 centerH">{{player?.score}}pts</div>
                                     <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 0">🥇</div>
                                     <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 1">🥈</div>
                                     <div class="col-1 centerH medal" *ngIf="listPlayers.indexOf(player) === 2">🥉</div>
                                     <div class="col-1 centerH centerW" *ngIf="listPlayers.indexOf(player) > 2">
-                                        {{listPlayers.indexOf(player)+1}}</div>
+                                        n°{{listPlayers.indexOf(player)+1}}</div>
                                 </div>
                             </div>
                             <div class="list-group-item" *ngIf="finalArray.length <= 0">

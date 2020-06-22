@@ -23,15 +23,16 @@ export class RoomService {
               private router: Router,
               private readonly socket: Socket) {
 
-    this.socket.on('updatePlayer', data => {
+    this.socket.on('updatePlayer', async (data) => {
       if (data && data.player && data.player.id) {
         if (this.currentRoom && this.currentPlayerList && this.currentRoom.id && this.currentRoom.playersId
           && this.currentRoom.playersId.includes(data.player.id)) {
           const index = this.currentPlayerList.findIndex(player => player.id === data.player.id);
           if (index === -1) {
-            utils.error('No player index...');
+            utils.error('No player index...', data.player);
+          } else {
+            this.currentPlayerList[index] = data.player;
           }
-          this.currentPlayerList[index] = data.player;
         }
         if (this.currentPlayer && this.currentPlayer.id
           && data.player.id === this.currentPlayer.id) {
@@ -71,10 +72,18 @@ export class RoomService {
   public currentPlayer: Player;
   public currentPlayerList: Player[];
 
-  populatePlayerList() {
+  async populatePlayerList() {
     this.currentPlayerList = [];
-    this.getPlayerList().then(res => {
+    return this.getPlayerList().then(res => {
       this.currentPlayerList = res;
+      if (this.currentRoom) {
+        this.currentPlayerList.forEach(p => {
+          if (p.isWinner) {
+            this.currentRoom.isPlaying = false;
+            this.editRoomAdmin();
+          }
+        });
+      }
     });
   }
 
@@ -100,14 +109,14 @@ export class RoomService {
   }
 
   async resetAll() {
-    utils.log(this.currentPlayer, this.socketService.socketId);
+    utils.log('Reset all', this.currentPlayer, this.socketService.socketId);
     if (this.currentPlayer) {
       await axios.post(utils.apiUrl('room', 'deletePlayer'), { socketId: this.currentPlayer.id })
         .then((res) => {
           if (res.data.error) {
             utils.error(res.data.error);
           } else {
-            utils.log(res.data);
+            utils.log('reset all res', res.data);
           }
         })
         .catch((err) => { utils.error(err); });
@@ -211,8 +220,8 @@ export class RoomService {
       return axios.get(utils.apiUrl('room', 'getAllScores'))
         .then((res: any) => {
           const scoreList: Score[] = [];
-          if (res && res.players) {
-            res.players.forEach((player: Player) => {
+          if (res && res.data) {
+            res.data.forEach((player: Player) => {
               if (player.scores) {
                 player.scores.forEach(scoreInfo => {
                   scoreList.push({ name: player.name, roomId: player.roomId, score: scoreInfo.score, date: scoreInfo.date });

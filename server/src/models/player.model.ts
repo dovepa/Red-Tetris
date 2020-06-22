@@ -6,12 +6,15 @@ export class Player {
     name: string;
     roomId: string;
     grid: TetrisGrid;
+    spectrum: number[][];
     tetrominoList: TetroMino[];
     isDeleted: boolean;
     isPlaying: boolean;
+    endGame: boolean;
     score: number;
-    partWin: number;
-    scores: { score: number, date: number }[];
+    date: number;
+    isWinner: boolean;
+    scores: { score: number, date: string }[];
 
     constructor(roomId: string, name: string, socketId: string) {
         this.roomId = roomId;

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TetroMino } from '../model/tetromino.model';
 import { TetrisGrid } from '../model/tetrisGrid.model';
+import { Player } from '../model/player.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +45,15 @@ export class TetrisService {
     } else if (cube - this.ghost > 0) {
       color = color.concat('ghost ');
       cube = cube - this.ghost;
+    }
+    color = color.concat('type' + cube);
+    return color;
+  }
+
+  returnColorSpectrum(cube: number): string {
+    let color = '';
+    if (cube !== 0) {
+      cube = 100;
     }
     color = color.concat('type' + cube);
     return color;
@@ -113,4 +123,46 @@ export class TetrisService {
       });
     });
   }
+
+  createSpectrum(player: Player) {
+    player.grid.shape.forEach((row, indexRow) => {
+      row.forEach((cube, indexCube) => {
+        if (cube !== 0) {
+          player.spectrum[indexRow][indexCube] = 100;
+        }
+        else {
+          player.spectrum[indexRow][indexCube] = 0;
+        }
+      });
+    });
+
+    player.spectrum.forEach((row, indexRow) => {
+      row.forEach((cube, indexCube) => {
+        if (cube !== 0) {
+          player.spectrum.forEach((rowDown, indexRowDown) => {
+            if (indexRowDown > indexRow) {
+              player.spectrum[indexRowDown][indexCube] = 100;
+            }
+          });
+        }
+      });
+    });
+  }
+
+
+  scoring(line: number) {
+    if (line === 1) {
+      return 100;
+    }
+    else if (line === 2) {
+      return 400;
+    }
+    else if (line === 3) {
+      return 900;
+    }
+    else if (line >= 4) {
+      return 2000;
+    }
+  }
+
 }

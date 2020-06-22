@@ -1,11 +1,13 @@
 <div class="row mt-3" *ngIf="roomService.currentPlayer && roomService.currentRoom">
-    <div class="d-none d-md-block col-md-4" style="max-width: 200px;">
+
+    <!-- Tetros list big  -->
+    <div *ngIf="!roomService.currentPlayer.endGame" class="d-none d-md-block col-md-4" style="max-width: 200px;">
         <div class="d-none d-md-block card text-white bg-success mb-3 animate__animated  animate__jackInTheBox"
             style="min-width: 140px">
             <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Current : ❓</div>
             <div *ngIf="roomService.currentRoom.isPlaying && current" class="card-header">Current :</div>
-            <div *ngIf="roomService.currentRoom.isPlaying && current"
-                class="centerDW card border-success m-2 animate__animated  animate__jackInTheBox" [ngStyle]="{'width' : (current.matrix * 30 + 2) +'px',
+            <div *ngIf="roomService.currentRoom.isPlaying && current" class="centerDW card border-success m-2  "
+                [ngStyle]="{'width' : (current.matrix * 30 + 2) +'px',
                         'height' : (current.matrix * 30 + 2) +'px'}">
                 <div class="row p-0 m-0 " *ngFor="let rows of current.shape">
                     <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows"></div>
@@ -13,44 +15,14 @@
             </div>
         </div>
         <div *ngIf="roomService.currentPlayer.tetrominoList"
-            class="card text-white bg-info mb-3 animate__animated  animate__jackInTheBox" style="min-width: 140px">
+            class="card text-white bg-info mb-3 animate__animated  animate__jackInTheBox" style="min-width: 140px;"
+            [ngStyle]="{' min-height: 205px': roomService.currentRoom.isPlaying}">
             <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Next : ❓</div>
             <div *ngIf="roomService.currentRoom.isPlaying" class="card-header">Next : </div>
             <div class="row" *ngIf="roomService.currentRoom.isPlaying">
                 <div class="col-4  col-md-12  "
                     *ngFor="let tetromino of roomService.currentPlayer.tetrominoList.slice(1, 4)">
-                    <div class="card border-success m-2 centerDW animate__animated  animate__jackInTheBox" [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
-                        'height' : (tetromino.matrix * 30 + 2) +'px'}">
-                        <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
-                            <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="d-block d-md-none col-12">
-        <div class="d-none d-md-block card text-white bg-success mb-3" style="min-width: 140px"
-            *ngIf="roomService.currentPlayer.tetrominoList && current">
-            <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Current : ❓</div>
-            <div *ngIf="roomService.currentRoom.isPlaying && current" class="card-header">Current :</div>
-            <div *ngIf="roomService.currentRoom.isPlaying && current"
-                class="centerDW card border-success m-2 animate__animated  animate__jackInTheBox" [ngStyle]="{'width' : (current.matrix * 30 + 2) +'px',
-                        'height' : (current.matrix * 30 + 2) +'px'}">
-                <div class="row p-0 m-0 " *ngFor="let rows of current.shape">
-                    <div class="p-0 m-0 block  {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows"></div>
-                </div>
-            </div>
-        </div>
-        <div *ngIf="roomService.currentPlayer.tetrominoList" class="card text-white bg-info mb-3"
-            style="min-width: 140px">
-            <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Next : ❓</div>
-            <div *ngIf="roomService.currentRoom.isPlaying" class="card-header">Next : </div>
-            <div class="row" *ngIf="roomService.currentRoom.isPlaying">
-                <div class="col-4  col-md-12  "
-                    *ngFor="let tetromino of roomService.currentPlayer.tetrominoList.slice(1,4)">
-                    <div class="card border-success m-2 centerDW animate__animated  animate__jackInTheBox" [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
+                    <div class="card border-success m-2 centerDW " [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
                         'height' : (tetromino.matrix * 30 + 2) +'px'}">
                         <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
                             <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows">
@@ -62,20 +34,67 @@
         </div>
     </div>
 
-    <div class="col animate__animated animate__fadeInDownBig" style="min-width: 340px;">
-        <div *ngIf="!roomService.currentRoom.isPlaying && !roomService.currentRoom.pause"
-            class="card border-success mb-3 centerDW centerH" style="width: 302px; height: 602px;">
-            <p class="centerDW centerH">Waiting for roomMaster Start ⏯️</p>
+
+    <!-- Tetros list Sm  -->
+    <div *ngIf="!roomService.currentPlayer.endGame" class="d-block d-md-none col-12">
+        <div class="d-none d-md-block card text-white bg-success mb-3  animate__animated  animate__jackInTheBox"
+            style="min-width: 140px" *ngIf="roomService.currentPlayer.tetrominoList && current">
+            <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Current : ❓</div>
+            <div *ngIf="roomService.currentRoom.isPlaying && current" class="card-header">Current :</div>
+            <div *ngIf="roomService.currentRoom.isPlaying && current" class="centerDW card border-success m-2  "
+                [ngStyle]="{'width' : (current.matrix * 30 + 2) +'px',
+                        'height' : (current.matrix * 30 + 2) +'px'}">
+                <div class="row p-0 m-0 " *ngFor="let rows of current.shape">
+                    <div class="p-0 m-0 block  {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows"></div>
+                </div>
+            </div>
         </div>
-        <div *ngIf="roomService.currentRoom.isPlaying && roomService.currentRoom.pause"
+        <div *ngIf="roomService.currentPlayer.tetrominoList"
+            class="card text-white bg-info mb-3  animate__animated  animate__jackInTheBox" style="min-width: 140px;"
+            [ngStyle]="{' min-height: 205px': roomService.currentRoom.isPlaying}">
+            <div *ngIf="!roomService.currentRoom.isPlaying" class="card-header">Next : ❓</div>
+            <div *ngIf="roomService.currentRoom.isPlaying" class="card-header">Next : </div>
+            <div class="row" *ngIf="roomService.currentRoom.isPlaying">
+                <div class="col-4  col-md-12  "
+                    *ngFor="let tetromino of roomService.currentPlayer.tetrominoList.slice(1,4)">
+                    <div class="card border-success m-2 centerDW" [ngStyle]="{'width' : (tetromino.matrix * 30 + 2) +'px',
+                        'height' : (tetromino.matrix * 30 + 2) +'px'}">
+                        <div class="row p-0 m-0 " *ngFor="let rows of tetromino.shape">
+                            <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}" *ngFor="let cube of rows">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Game Board  -->
+    <div class="col animate__animated animate__fadeInDownBig" style="min-width: 340px;">
+        <div *ngIf="!roomService.currentRoom.pause && !roomService.currentPlayer.isPlaying "
+            class="card border-success mb-3 centerDW centerH" style="width: 302px; height: 602px;">
+            <p class="centerDW centerH" *ngIf="roomService.currentPlayer.endGame && roomService.currentPlayer.isWinner">
+                🎉🎉🎉 You Win 🎉🎉🎉</p>
+            <p class="centerDW centerH"
+                *ngIf="roomService.currentPlayer.endGame && !roomService.currentPlayer.isWinner">😢😢😢 You Lose 😢😢😢
+            </p>
+            <p class="centerDW centerH" *ngIf="!roomService.currentPlayer.endGame">Waiting for roomMaster Start ⏯️</p>
+            <p class="centerDW centerH" *ngIf="roomService.currentPlayer.endGame">Waiting for roomMaster Re-Start ⏯️</p>
+        </div>
+        <div *ngIf="roomService.currentRoom.isPlaying && roomService.currentRoom.pause && roomService.currentPlayer.isPlaying "
             class="card border-success mb-3 centerDW centerH" style="width: 302px; height: 602px;">
             <p class="centerDW centerH">Room is ⏸️</p>
         </div>
-        <div *ngIf="roomService.currentRoom.isPlaying && !roomService.currentRoom.pause && roomService.currentPlayer.grid"
-            (swipedown)="move('down')" (swipeup)="move('up')" (swipeleft)="move('left')" (swiperight)="move('right')"
-            (tap)="move('downMax')" class="card border-success mb-3 centerDW" style="width: 302px; height: 602px;">
+        <div *ngIf="roomService.currentRoom.isPlaying  
+        && !roomService.currentPlayer.endGame
+        && roomService.currentPlayer.isPlaying 
+        && !roomService.currentRoom.pause
+         && roomService.currentPlayer.grid" (swipedown)="move('down')" (swipeup)="move('up')"
+            (swipeleft)="move('left')" (swiperight)="move('right')" (tap)="move('downMax')"
+            class="card border-success mb-3 centerDW" style="width: 302px; height: 602px;">
             <div class="container-fluid p-0 m-0">
-                <div class="row p-0 m-0" *ngFor="let rows of roomService.currentPlayer.grid.shape">
+                <div class="row p-0 m-0" *ngFor="let rows of roomService.currentPlayer.grid.shape.slice(2, 22)">
                     <div class="p-0 m-0 block {{tetrisService.returnColor(cube)}}"
                         *ngFor="let cube of rows; let i = index">
                     </div>
@@ -84,6 +103,8 @@
         </div>
     </div>
 
+
+    <!-- Leave & panel admin  -->
     <div class="col" style="min-width: 350px;">
         <div class="row m-3">
             <div class="col-6">
@@ -99,17 +120,15 @@
             </div>
         </div>
 
+
+        <!-- List player + spectrum  -->
         <div class="card border-info mb-3">
             <div class="card-header">List of room players</div>
             <div class="list-group-item">
                 <div class="row">
-                    <div class="centerW  col-4">
-                        Name
-                    </div>
-                    <div class="centerW  col-4">Score
-                    </div>
-                    <div class="centerW  col-4">Part
-                        Win</div>
+                    <div class="centerW  col-4">Name</div>
+                    <div class="centerW  col-4">Score</div>
+                    <div class="centerW  col-4">Spectrum</div>
                 </div>
             </div>
             <div style="max-height: 550px; overflow-y: auto;">
@@ -118,13 +137,27 @@
                     <div class="row">
                         <div class="centerW col-4">
                             {{player.name}}</div>
-                        <div class="centerW col-4">
+                        <div class="centerW col-2">
                             {{player.score}}</div>
-                        <div class="centerW col-4">
-                            {{player.partWin}}</div>
+                        <div class="col-6" *ngIf="player.id !== roomService.currentPlayer.id">
+                            <div *ngIf="roomService.currentRoom.isPlaying && player.spectrum && !player.endGame "
+                                class="card border-success mb-3 centerDW" style="width: 102px; height: 202px;">
+                                <div class="container-fluid p-0 m-0">
+                                    <div class="row p-0 m-0" *ngFor="let rows of player.spectrum.slice(2, 22)">
+                                        <div class="p-0 m-0 sblock {{tetrisService.returnColorSpectrum(cube)}}"
+                                            *ngFor="let cube of rows; let i = index">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <p *ngIf="player.endGame ">End Game</p>
+                        </div>
                     </div>
                 </div>
             </div>
+
+
         </div>
+
     </div>
 </div>

@@ -4,6 +4,12 @@
     border: solid 1px #E9ECEF;
 }
 
+.sblock {
+    width: 10px;
+    height: 10px;
+    border: solid 1px #E9ECEF;
+}
+
 .ghost {
     opacity: 0.2;
 }
@@ -38,4 +44,8 @@
 
 .type7 {
     background-color: orange;
+}
+
+.type100 {
+    background-color: black;
 }

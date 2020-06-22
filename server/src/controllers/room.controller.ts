@@ -42,11 +42,15 @@ export const createRoom = async(req, res) => {
         newRoom.masterName = room.playerName;
         newRoom.masterId = room.socketId;
         newRoom.playersId = [room.socketId];
+        newRoom.pause = false;
+        newRoom.isPlaying = false;
         roomList.push(newRoom);
         const newPlayer = new Player(newRoom.id, room.playerName, room.socketId);
-        newPlayer.grid = new TetrisGrid(10, 20);
+        newPlayer.scores = [];
+        newPlayer.grid = new TetrisGrid(10, 22);
+        newPlayer.spectrum = newPlayer.grid.shape;
         newPlayer.score = 0;
-        newPlayer.partWin = 0;
+        newPlayer.isWinner = false;
         newPlayer.tetrominoList = [];
         playerList.push(newPlayer);
         req.app.io.emit('updatePlayer', { player: newPlayer, room: newRoom });
@@ -106,9 +110,11 @@ export const createPlayer = async(req, res) => {
         });
         if (status === true) {
             const newPlayer = new Player(data.roomId, data.playerName, data.socketId);
-            newPlayer.grid = new TetrisGrid(10, 20);
+            newPlayer.scores = [];
+            newPlayer.grid = new TetrisGrid(10, 22);
+            newPlayer.spectrum = newPlayer.grid.shape;
             newPlayer.score = 0;
-            newPlayer.partWin = 0;
+            newPlayer.isWinner = false;
             newPlayer.tetrominoList = [];
             roomList[indexRoom].playersId.push(newPlayer.id);
             playerList.push(newPlayer);
@@ -144,6 +150,26 @@ export const deletePlayer = (socketId: string) => {
                         });
                     }
                     playerList[indexPlayer].isDeleted = true; // delete player
+                    if (roomList[indexRoom].isPlaying && !playerList[indexPlayer].endGame) {
+                        const playersTmp: Player[] = [];
+                        roomList[indexRoom].playersId.forEach(id => {
+                            const indexPlayerTmp = playerList.findIndex(player => { return (!player.isDeleted && player.id === id); });
+                            playersTmp.push(playerList[indexPlayerTmp]);
+                        });
+                        const lastPlayer = playersTmp.every(p => {
+                            if (p.id !== socketId) {
+                                return (p.isPlaying === false && p.endGame === true);
+                            }
+                            else {
+                                return true;
+                            }
+                        });
+                        if (lastPlayer) {
+                            playersTmp.sort((a, b) => { return b.date - a.date; });
+                            if (playersTmp[0])
+                                playersTmp[0].isWinner = true;
+                        }
+                    }
                 }
                 else {
                     playerList[indexPlayer].isDeleted = true; // delete player

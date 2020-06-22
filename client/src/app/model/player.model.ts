@@ -5,7 +5,7 @@ export interface Score {
     name: string;
     roomId: string;
     score: number;
-    date: number;
+    date: string;
 }
 
 export class Player {
@@ -13,12 +13,15 @@ export class Player {
     name: string;
     roomId; string;
     grid: TetrisGrid;
+    spectrum: number[][];
     tetrominoList: TetroMino[];
     isPlaying: boolean;
+    endGame: boolean;
     isDeleted: boolean;
-    scores: { score: number, date: number }[];
+    scores: { score: number, date: string }[];
     score: number;
-    partWin: number;
+    date: number;
+    isWinner: boolean;
 
     constructor(roomId: string, name: string, socketId: string) {
         this.roomId = roomId;
