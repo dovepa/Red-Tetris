@@ -1,21 +1,21 @@
 import * as utils from '../utils';
 import * as roomCtrl from './room.controller';
 import * as tetrisCtrl from './tetris.controller';
-import { Room } from '../models/room.model';
 import { Player } from '../models/player.model';
+import { Piece } from '../models/piece.model';
 
 const socketController = (io) => {
     io.on('connection', socket => {
         utils.log(`new connection: ${socket.id}`);
 
 
-        socket.on('updatePlayerServer', async(data: { player: Player, room: Room }) => {
-            tetrisCtrl.updatePlayerServer(data.player).then((res: { player: Player, room: Room }) => {
+        socket.on('updatePlayerServer', async(data: { player: Player, room: Piece }) => {
+            tetrisCtrl.updatePlayerServer(data.player).then((res: { player: Player, room: Piece }) => {
                 return io.emit('updatePlayer', res);
             }).catch(err => utils.error(err));
         });
 
-        socket.on('updateRoomServer', async(room: Room) => {
+        socket.on('updateRoomServer', async(room: Piece) => {
             const currentRoomState = await roomCtrl.currentRoom(room.id);
             if (currentRoomState === undefined) {
                 return io.emit('updateRoomAdmin', { error: 'Room id not found' });
@@ -73,12 +73,12 @@ const socketController = (io) => {
             }
         });
 
-        socket.on('newTetro', async(room: Room) => {
+        socket.on('newTetro', async(room: Piece) => {
             const currentRoomState = await roomCtrl.currentRoom(room.id);
             if (currentRoomState === undefined) {
                 return io.emit('updateRoomAdmin', { error: 'Room id not found' });
             } else {
-                tetrisCtrl.createTetromino()
+                tetrisCtrl.createTetromino(currentRoomState)
                     .then((res: any) => {
                         io.emit('updateTetris', { action: 'newTetro', room: currentRoomState, tetrominoList: res });
                     }).catch(err => {
@@ -91,7 +91,7 @@ const socketController = (io) => {
         socket.on('disconnect', async(reason) => {
             utils.log(`${socket.id} disconnected because: ${reason}`);
             await roomCtrl.deletePlayer(socket.id)
-                .then((res: Room[]) => {
+                .then((res: Piece[]) => {
                     res.forEach(resRoom => {
                         io.emit('updateRoom', { room: resRoom });
                     });

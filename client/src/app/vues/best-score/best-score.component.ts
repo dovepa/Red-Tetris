@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as utils from '../../utils';
-import { Player, Score } from 'src/app/model/player.model';
+import { Score } from 'src/app/model/player.model';
 import { Socket } from 'ngx-socket-io';
 import { RoomService } from 'src/app/service/room.service';
 

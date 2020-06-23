@@ -43,8 +43,8 @@ export class GameComponent implements OnInit {
       this.paramPlayerName = url.split('[')[1].split(']')[0];
       if (
         !this.roomService.currentPlayer
-        || !this.roomService.currentPlayer.grid
-        || !this.roomService.currentPlayer.grid.shape
+        || !this.roomService.currentPlayer.game
+        || !this.roomService.currentPlayer.game.shape
         || !this.roomService.currentRoom
         || this.paramRoomId !== this.roomService.currentRoom.id
         || this.paramPlayerName !== this.roomService.currentPlayer.name

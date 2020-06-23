@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TetroMino } from '../model/tetromino.model';
-import { TetrisGrid } from '../model/tetrisGrid.model';
 import { Player } from '../model/player.model';
+import { Game } from '../model/game.model';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +13,7 @@ export class TetrisService {
 
   constructor() { }
 
-  isValidPlace(shape: number[][], sign: number, grid: TetrisGrid, positionX: number, positionY: number): boolean {
+  isValidPlace(shape: number[][], sign: number, grid: Game, positionX: number, positionY: number): boolean {
     return shape.every((row, countY) => {
       return row.every((cube, countX) => {
         const curentX = positionX + countX;
@@ -27,7 +27,7 @@ export class TetrisService {
     });
   }
 
-  lastYValidPlace(tetro: TetroMino, grid: TetrisGrid) {
+  lastYValidPlace(tetro: TetroMino, grid: Game) {
     let ymax = tetro.position.y.valueOf();
     while (this.isValidPlace(tetro.shape, tetro.sign, grid, tetro.position.x, ymax + 1)) {
       ymax++;
@@ -79,7 +79,7 @@ export class TetrisService {
     return a;
   }
 
-  draw(grid: TetrisGrid, tetro: TetroMino): void {
+  draw(grid: Game, tetro: TetroMino): void {
     tetro.position.ymax = this.lastYValidPlace(tetro, grid);
     // ghost
     if (!tetro.lock && tetro.position.ymax > tetro.position.y) {
@@ -114,7 +114,7 @@ export class TetrisService {
     });
   }
 
-  erase(grid: TetrisGrid, tetro: TetroMino) {
+  erase(grid: Game, tetro: TetroMino) {
     grid.shape.forEach((rows) => {
       rows.forEach((cube, indexX) => {
         if (rows[indexX] === (tetro.sign + this.watermark) || rows[indexX] === (tetro.sign + this.ghost)) {
@@ -125,23 +125,23 @@ export class TetrisService {
   }
 
   createSpectrum(player: Player) {
-    player.grid.shape.forEach((row, indexRow) => {
+    player.game.shape.forEach((row, indexRow) => {
       row.forEach((cube, indexCube) => {
         if (cube !== 0) {
-          player.spectrum[indexRow][indexCube] = 100;
+          player.game.spectrum[indexRow][indexCube] = 100;
         }
         else {
-          player.spectrum[indexRow][indexCube] = 0;
+          player.game.spectrum[indexRow][indexCube] = 0;
         }
       });
     });
 
-    player.spectrum.forEach((row, indexRow) => {
+    player.game.spectrum.forEach((row, indexRow) => {
       row.forEach((cube, indexCube) => {
         if (cube !== 0) {
-          player.spectrum.forEach((rowDown, indexRowDown) => {
+          player.game.spectrum.forEach((rowDown, indexRowDown) => {
             if (indexRowDown > indexRow) {
-              player.spectrum[indexRowDown][indexCube] = 100;
+              player.game.spectrum[indexRowDown][indexCube] = 100;
             }
           });
         }

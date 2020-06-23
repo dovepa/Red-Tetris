@@ -1,10 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as utils from '../../utils';
-import { Room } from 'src/app/model/room.model';
-import { Player } from 'src/app/model/player.model';
 import { RoomService } from 'src/app/service/room.service';
 import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
+import { Piece } from 'src/app/model/piece.model';
 
 @Component({
   selector: 'app-room-list',
@@ -15,10 +14,10 @@ export class RoomListComponent implements OnInit, OnDestroy {
 
   sum: number;
   search: string;
-  roomList: Room[];
-  finalArray: Room[] = [];
+  roomList: Piece[];
+  finalArray: Piece[] = [];
   error: boolean;
-  searchTmp: Room[];
+  searchTmp: Piece[];
 
   handler;
   constructor(private readonly roomService: RoomService,

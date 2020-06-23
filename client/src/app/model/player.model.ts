@@ -1,5 +1,4 @@
-import { TetrisGrid } from './tetrisGrid.model';
-import { TetroMino } from './tetromino.model';
+import { Game } from './game.model';
 
 export interface Score {
     name: string;
@@ -11,21 +10,15 @@ export interface Score {
 export class Player {
     id: string;
     name: string;
-    roomId; string;
-    grid: TetrisGrid;
-    spectrum: number[][];
-    tetrominoList: TetroMino[];
-    isPlaying: boolean;
-    endGame: boolean;
-    isDeleted: boolean;
-    scores: { score: number, date: string }[];
-    score: number;
-    date: number;
-    isWinner: boolean;
+    roomId: string;
+    game: Game;
+    isDeleted = false;
+    scores: { score: number, date: string }[] = [];
 
     constructor(roomId: string, name: string, socketId: string) {
         this.roomId = roomId;
         this.name = name;
         this.id = socketId;
+        this.game = new Game();
     }
 }

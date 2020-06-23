@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Room } from '../model/room.model';
 import axios from 'axios';
 import * as utils from '../utils';
 import { ToastService } from './toast.service';
@@ -11,6 +10,7 @@ import { ModalComponent } from '../components/modal/modal.component';
 import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
 import { hashKey } from '../customUrlSerializer';
+import { Piece } from '../model/piece.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,10 +18,10 @@ import { hashKey } from '../customUrlSerializer';
 export class RoomService {
 
   constructor(private readonly toastService: ToastService,
-              private readonly socketService: SocketService,
-              private modalService: NgbModal,
-              private router: Router,
-              private readonly socket: Socket) {
+    private readonly socketService: SocketService,
+    private modalService: NgbModal,
+    private router: Router,
+    private readonly socket: Socket) {
 
     this.socket.on('updatePlayer', async (data) => {
       if (data && data.player && data.player.id) {
@@ -68,7 +68,7 @@ export class RoomService {
     });
   }
   public selectedRoomId: string;
-  public currentRoom: Room;
+  public currentRoom: Piece;
   public currentPlayer: Player;
   public currentPlayerList: Player[];
 
@@ -78,7 +78,7 @@ export class RoomService {
       this.currentPlayerList = res;
       if (this.currentRoom) {
         this.currentPlayerList.forEach(p => {
-          if (p.isWinner) {
+          if (p.game.isWinner) {
             this.currentRoom.isPlaying = false;
             this.editRoomAdmin();
           }
@@ -94,7 +94,7 @@ export class RoomService {
           let scores: Player[] = [];
           scores = res.data;
           if (scores) {
-            scores.sort((a, b) => b.score - a.score);
+            scores.sort((a, b) => b.game.score - a.game.score);
           }
           resolve(scores);
         });
@@ -156,8 +156,8 @@ export class RoomService {
 
 
 
-  async getAllRooms(): Promise<Room[]> {
-    let list: Room[] = [];
+  async getAllRooms(): Promise<Piece[]> {
+    let list: Piece[] = [];
     await axios.get(utils.apiUrl('room', 'getAllRooms'))
       .then((res) => {
         if (res.data) {
@@ -206,8 +206,8 @@ export class RoomService {
     });
   }
 
-  async getRoom(id: string): Promise<Room> {
-    let room: Room;
+  async getRoom(id: string): Promise<Piece> {
+    let room: Piece;
     await axios.post(utils.apiUrl('room', 'getRoomId'), { id })
       .then((res) => {
         room = res.data;

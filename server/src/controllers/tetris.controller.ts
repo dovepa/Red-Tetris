@@ -1,7 +1,8 @@
 import { roomList, playerList } from './room.controller';
 import { TetroMino } from '../models/tetromino.model';
 import { Player } from '../models/player.model';
-import { TetrisGrid } from '../models/tetrisGrid.model';
+import { Game } from '../models/game.model';
+import { Piece } from '../models/piece.model';
 
 export const updatePlayerServer = (updatePlayer: Player) => {
     return new Promise((resolve, reject) => {
@@ -12,25 +13,20 @@ export const updatePlayerServer = (updatePlayer: Player) => {
         if (indexPlayer === -1)
             reject({ error: 'No player found...' });
 
-        playerList[indexPlayer].isPlaying = updatePlayer.isPlaying;
-        playerList[indexPlayer].endGame = updatePlayer.endGame;
-        playerList[indexPlayer].isWinner = updatePlayer.isWinner;
-        playerList[indexPlayer].tetrominoList = updatePlayer.tetrominoList;
-        playerList[indexPlayer].grid = updatePlayer.grid;
-        playerList[indexPlayer].score = updatePlayer.score;
+        playerList[indexPlayer].game = updatePlayer.game;
         playerList[indexPlayer].scores = updatePlayer.scores;
-        playerList[indexPlayer].spectrum = updatePlayer.spectrum;
         resolve({ room: roomList[indexRoom], player: playerList[indexPlayer] });
 
     });
 };
 
 
-export const createTetromino = () => {
+export const createTetromino = (room: Piece) => {
     return new Promise((resolve, reject) => {
         const tetrominoList: TetroMino[] = [];
         let i = 0;
         while (i < 14) {
+            room.tetrominoList.push(new TetroMino());
             tetrominoList.push(new TetroMino());
             i++;
         }
@@ -46,7 +42,7 @@ export const playGame = (roomId) => {
         else {
             roomList[indexRoom].isPlaying = true;
             initPlayers(roomId).then(plTmp => {
-                createTetromino().then(tetro => {
+                createTetromino(roomList[indexRoom]).then(tetro => {
                     resolve({ room: roomList[indexRoom], tetrominoList: tetro, playerList: plTmp });
                 });
             });
@@ -64,14 +60,7 @@ export const initPlayers = (roomId) => {
             roomList[indexRoom].playersId.forEach(id => {
                 const indexPlayer = playerList.findIndex(player => { return (player.id === id && !player.isDeleted); });
                 if (indexPlayer !== -1) {
-                    playerList[indexPlayer].grid = new TetrisGrid(10, 22);
-                    playerList[indexPlayer].spectrum = playerList[indexPlayer].grid.shape;
-                    playerList[indexPlayer].score = 0;
-                    playerList[indexPlayer].isPlaying = false;
-                    playerList[indexPlayer].date = Date.now();
-                    playerList[indexPlayer].endGame = false;
-                    playerList[indexPlayer].isWinner = false;
-                    playerList[indexPlayer].tetrominoList = [];
+                    playerList[indexPlayer].game = new Game();
                     playerListTmp.push(playerList[indexPlayer]);
                 }
             });

@@ -15,5 +15,5 @@ if (process.env.heroku) {
   environmentSwitch = environmentDev;
 }
 
-// environmentSwitch = environmentProd;
+environmentSwitch = environmentProd;
 export const environment = environmentSwitch;

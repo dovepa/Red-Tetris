@@ -28,6 +28,10 @@ import * as Hammer from 'hammerjs';
 import { HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AdminPanelComponent } from './components/admin-panel/admin-panel.component';
+import { StoreModule } from '@ngrx/store';
+import { reducers, metaReducers } from './reducers';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { environment } from '../environments/environment';
 
 
 const config: SocketIoConfig = { url: utils.urlServer(), options: {} };
@@ -65,7 +69,15 @@ export class MyHammerConfig extends HammerGestureConfig {
     FormsModule,
     InfiniteScrollModule,
     NgbModule,
-    SocketIoModule.forRoot(config)
+    SocketIoModule.forRoot(config),
+    StoreModule.forRoot(reducers, {
+      metaReducers, 
+      runtimeChecks: {
+        strictStateImmutability: true,
+        strictActionImmutability: true,
+      }
+    }),
+    !environment.production ? StoreDevtoolsModule.instrument() : []
   ],
   providers: [{ provide: UrlSerializer, useClass: CustomUrlSerializer },
   {

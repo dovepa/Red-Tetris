@@ -1,9 +1,9 @@
-import { Room } from '../models/room.model';
 import { Player } from '../models/player.model';
 import { regex, log, error } from '../utils';
-import { TetrisGrid } from '../models/tetrisGrid.model';
+import { Piece } from '../models/piece.model';
+import { Game } from '../models/game.model';
 
-export const roomList: Room[] = [];
+export const roomList: Piece[] = [];
 export const playerList: Player[] = [];
 
 export const currentRoom = (roomId) => {
@@ -38,7 +38,7 @@ export const createRoom = async(req, res) => {
     else if (!roomList.filter(r => { return r.isDeleted !== true; }).every((r) => { return (r.id !== room.roomId && !room.isDeleted); }))
         res.status(202).json({ error: 'Room already exist 😢' });
     else {
-        const newRoom = new Room(room.roomId, room.mode === 'solo' ? 0 : 1);
+        const newRoom = new Piece(room.roomId, room.mode === 'solo' ? 0 : 1);
         newRoom.masterName = room.playerName;
         newRoom.masterId = room.socketId;
         newRoom.playersId = [room.socketId];
@@ -46,12 +46,6 @@ export const createRoom = async(req, res) => {
         newRoom.isPlaying = false;
         roomList.push(newRoom);
         const newPlayer = new Player(newRoom.id, room.playerName, room.socketId);
-        newPlayer.scores = [];
-        newPlayer.grid = new TetrisGrid(10, 22);
-        newPlayer.spectrum = newPlayer.grid.shape;
-        newPlayer.score = 0;
-        newPlayer.isWinner = false;
-        newPlayer.tetrominoList = [];
         playerList.push(newPlayer);
         req.app.io.emit('updatePlayer', { player: newPlayer, room: newRoom });
         req.app.io.emit('updateRoom', { room: newRoom });
@@ -110,12 +104,6 @@ export const createPlayer = async(req, res) => {
         });
         if (status === true) {
             const newPlayer = new Player(data.roomId, data.playerName, data.socketId);
-            newPlayer.scores = [];
-            newPlayer.grid = new TetrisGrid(10, 22);
-            newPlayer.spectrum = newPlayer.grid.shape;
-            newPlayer.score = 0;
-            newPlayer.isWinner = false;
-            newPlayer.tetrominoList = [];
             roomList[indexRoom].playersId.push(newPlayer.id);
             playerList.push(newPlayer);
             req.app.io.emit('updatePlayer', { player: newPlayer, room: roomList[indexRoom] });
@@ -129,7 +117,7 @@ export const createPlayer = async(req, res) => {
 
 export const deletePlayer = (socketId: string) => {
     return new Promise((resolve, reject) => {
-        const roomListTmp: Room[] = [];
+        const roomListTmp: Piece[] = [];
         if (!socketId)
             reject('No socket Id');
         const indexPlayer = playerList.findIndex(player => { return (!player.isDeleted && player.id === socketId); });
@@ -150,7 +138,7 @@ export const deletePlayer = (socketId: string) => {
                         });
                     }
                     playerList[indexPlayer].isDeleted = true; // delete player
-                    if (roomList[indexRoom].isPlaying && !playerList[indexPlayer].endGame) {
+                    if (roomList[indexRoom].isPlaying && !playerList[indexPlayer].game.endGame) {
                         const playersTmp: Player[] = [];
                         roomList[indexRoom].playersId.forEach(id => {
                             const indexPlayerTmp = playerList.findIndex(player => { return (!player.isDeleted && player.id === id); });
@@ -158,16 +146,16 @@ export const deletePlayer = (socketId: string) => {
                         });
                         const lastPlayer = playersTmp.every(p => {
                             if (p.id !== socketId) {
-                                return (p.isPlaying === false && p.endGame === true);
+                                return (p.game.isPlaying === false && p.game.endGame === true);
                             }
                             else {
                                 return true;
                             }
                         });
                         if (lastPlayer) {
-                            playersTmp.sort((a, b) => { return b.date - a.date; });
+                            playersTmp.sort((a, b) => { return b.game.date - a.game.date; });
                             if (playersTmp[0])
-                                playersTmp[0].isWinner = true;
+                                playersTmp[0].game.isWinner = true;
                         }
                     }
                 }
@@ -213,7 +201,7 @@ export const deletePlayerId = async(req, res) => {
     const id = req.body.socketId;
     if (!id)
         res.status(202).json({ error: 'Bad Request.' });
-    deletePlayer(id).then((response: Room[]) => {
+    deletePlayer(id).then((response: Piece[]) => {
         response.forEach(resRoom => {
             req.app.io.emit('updateRoom', { room: resRoom });
         });
