@@ -5,8 +5,6 @@ import * as bodyParser from 'body-parser';
 import * as socket from 'socket.io';
 import * as cors from 'cors';
 import socketController from './controllers/socket.controller';
-import tetrisRoute from './routes/tetris';
-import roomRoute from './routes/room';
 import { environment } from './environments/environment';
 
 const port = environment.serverPort || 3002;
@@ -48,11 +46,10 @@ routerApp.route('/api/')
         res.json({
             message: 'Welcome to Red-Tetris API 🎮',
             methode: `you are using ${req.method} methode`,
-            usage: `Routes for api : chat, room, tetris`
+            usage: `Socket.io no routes`
         });
     });
-routerApp.use('/api/room/', roomRoute);
-routerApp.use('/api/tetris/', tetrisRoute);
+
 
 app.use(routerApp);
 
@@ -67,7 +64,7 @@ if (environment.production) {
             res.json({
                 message: 'Welcome to Red-Tetris API 🎮',
                 methode: `you are using ${req.method} methode`,
-                usage: `Routes for api : use api/ : chat, room, tetris`,
+                usage: `Socket.io no routes`,
                 front: `On dev port`
             });
         });

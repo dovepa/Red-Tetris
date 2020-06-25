@@ -8,6 +8,76 @@ const socketController = (io) => {
     io.on('connection', socket => {
         utils.log(`new connection: ${socket.id}`);
 
+        /**
+         * Room controllers Functions :
+         */
+
+        socket.on('getPlayerIdList', async(data: { id: string, playersId: string[] }) => {
+            return roomCtrl.getPlayerIds(data.playersId)
+                .then((res: any) => {
+                    io.to(data.id).emit('resGetPlayerIdList', { list: res });
+                })
+                .catch(err => { io.to(data.id).emit('resGetPlayerIdList', err); });
+        });
+
+        socket.on('createPlayer', async(data: { id: string, roomId: string, playerName: string }) => {
+            return roomCtrl.createPlayer(data)
+                .then((res: any) => {
+                    io.emit('updatePlayer', { player: res.player, room: res.room });
+                    io.emit('updateRoom', { room: res.room });
+
+                    io.to(data.id).emit('resCreatePlayer', res);
+                })
+                .catch(err => { io.to(data.id).emit('resCreatePlayer', err); });
+        });
+
+        socket.on('testPlayer', async(data: { id: string, roomId: string, playerName: string }) => {
+            return roomCtrl.testIfPlayerNameIsFree(data)
+                .then(res => { io.to(data.id).emit('resTestPlayer', res); })
+                .catch(err => { io.to(data.id).emit('resTestPlayer', err); });
+        });
+
+        socket.on('testRoom', async(data: { id: string, roomId: string }) => {
+            if (data && data.id && data.roomId) {
+                return roomCtrl.testIfRoomIdIsFree(data.roomId)
+                    .then(res => { io.to(data.id).emit('resTestRoom', { isFree: res }); });
+            }
+        });
+
+        socket.on('createRoom', async(data: { id: string, roomId: string, playerName: string, mode: number }) => {
+            return roomCtrl.createRoom(data).then((res: any) => {
+                io.emit('updatePlayer', { player: res.player, room: res.room });
+                io.emit('updateRoom', { room: res.room });
+                io.to(data.id).emit('resCreateRoom', { success: 'Room created successfully 😃', player: res.player, room: res.room });
+            }).catch(err => { io.to(data.id).emit('resCreateRoom', err); });
+        });
+
+        socket.on('deletePlayer', async(data: { id: string }) => {
+            if (data && data.id) {
+                roomCtrl.deletePlayer(data.id);
+                io.emit('updateRoom');
+            }
+        });
+
+        socket.on('getAllRooms', async(data) => {
+            if (data && data.id)
+                return roomCtrl.getAllRooms()
+                    .then(res => {
+                        io.to(data.id).emit('resGetAllRooms', { id: data.id, list: res });
+                    }).catch(err => { utils.error(err); });
+        });
+
+        socket.on('getAllScores', async(data: { id: string }) => {
+            if (data && data.id)
+                return roomCtrl.getAllPlayerScores().then(res => {
+                    io.to(data.id).emit('resGetAllScores', { id: data.id, list: res });
+                }
+                );
+        });
+
+        /**
+         * Tetromino controllers Functions :
+         */
 
         socket.on('updatePlayerServer', async(data: { player: Player, room: Piece }) => {
             tetrisCtrl.updatePlayerServer(data.player).then((res: { player: Player, room: Piece }) => {
@@ -82,11 +152,10 @@ const socketController = (io) => {
                     .then((res: any) => {
                         io.emit('updateTetris', { action: 'newTetro', room: currentRoomState, tetrominoList: res });
                     }).catch(err => {
-                        io.emit('updateRoomAdmin', { err });
+                        io.emit('updateRoomAdmin', { room: currentRoomState, err });
                     });
             }
         });
-
 
         socket.on('disconnect', async(reason) => {
             utils.log(`${socket.id} disconnected because: ${reason}`);

@@ -4,6 +4,8 @@ import { RoomService } from 'src/app/service/room.service';
 import { Socket } from 'ngx-socket-io';
 import { Router } from '@angular/router';
 import { Piece } from 'src/app/model/piece.model';
+import { SocketService } from 'src/app/service/socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-room-list',
@@ -19,32 +21,37 @@ export class RoomListComponent implements OnInit, OnDestroy {
   error: boolean;
   searchTmp: Piece[];
 
-  handler;
+  subscription: Subscription;
   constructor(private readonly roomService: RoomService,
               private readonly socket: Socket,
+              private readonly socketService: SocketService,
               private readonly router: Router) {
     this.error = false;
     this.roomList = [];
 
-    this.getRooms();
     this.searchTmp = this.roomList;
     this.sum = 0;
     this.appendItems();
 
-    this.socket.on('updateRoom', this.updateRoom.bind(this));
-  }
+    this.socket.emit('getAllRooms', { id: this.socketService.socketId });
+    this.subscription = this.socketService.socketIdSetterObs.subscribe(() => {
+      this.socket.emit('getAllRooms', { id: this.socketService.socketId });
+    });
 
-  async updateRoom(data) {
-    await this.getRooms();
+    this.socket.on('resGetAllRooms', async (data) => {
+      if (data.id === this.socketService.socketId) {
+        this.roomList = data.list;
+        this.searchRoom();
+      }
+    });
+
+    this.socket.on('updateRoom', (async (data) => {
+      this.socket.emit('getAllRooms', { id: this.socketService.socketId });
+    }));
   }
 
   ngOnDestroy() {
-    this.socket.removeListener('updateRoom', this.updateRoom.bind(this));
-  }
-
-  async getRooms() {
-    this.roomList = await this.roomService.getAllRooms();
-    this.searchRoom();
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   searchRoom() {

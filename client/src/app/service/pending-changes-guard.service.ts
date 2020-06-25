@@ -20,7 +20,6 @@ export class PendingChangesGuardService implements OnDestroy {
 
 
   ngOnDestroy() {
-    this.socket.removeAllListeners();
   }
 
 

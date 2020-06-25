@@ -3,6 +3,7 @@ import * as utils from '../../utils';
 import { RoomService } from 'src/app/service/room.service';
 import { ToastService } from 'src/app/service/toast.service';
 import { Socket } from 'ngx-socket-io';
+import { SocketService } from 'src/app/service/socket.service';
 
 @Component({
   selector: 'app-create-room',
@@ -18,6 +19,7 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
   roomIdStatus: number;
   timerEvent: number | undefined;
   constructor(private readonly roomService: RoomService,
+              private readonly socketService: SocketService,
               private readonly toastService: ToastService,
               private readonly socket: Socket
   ) {
@@ -25,17 +27,34 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
     this.playerNameStatus = 0;
     this.mode = 'multiplayer';
 
-    this.socket.on('updateRoom', this.updateRoom.bind(this));
-  }
+    this.socket.on('resCreateRoom', async (data) => {
+      if (data && data.error) {
+        this.toastService.createMessage('error', data.error);
+        this.roomId = '';
+        this.playerName = '';
+        this.verifRoomId();
+        this.verifPlayerName();
+      }
+    });
 
-  async updateRoom(data) {
-    if (this.roomService && data && data.room && data.room.id && data.room.id === this.roomService.selectedRoomId && !data.room.isDeleted) {
-      this.verifRoomId();
-    }
+    this.socket.on('updateRoom', async (data) => {
+      if (this.roomService && data && data.room && data.room.id
+        && data.room.id === this.roomService.selectedRoomId && !data.room.isDeleted) {
+        this.verifRoomId();
+      }
+    });
+
+    this.socket.on('resTestRoom', async (data) => {
+      if (data.isFree) {
+        this.roomIdStatus = 1;
+      }
+      else {
+        this.roomIdStatus = 2;
+      }
+    });
   }
 
   ngOnDestroy(): void {
-    this.socket.removeListener('updateRoom', this.updateRoom.bind(this));
   }
 
 
@@ -63,31 +82,15 @@ export class CreateRoomComponent implements OnInit, OnDestroy {
       this.roomIdStatus = 3;
     } else {
       this.timerEvent = window.setTimeout(async () => {
-        const isFree = await this.roomService.testIfRoomIdIsFree(this.roomId);
-        if (isFree) {
-          this.roomIdStatus = 1;
-        }
-        else {
-          this.roomIdStatus = 2;
-        }
+        this.socket.emit('testRoom', { id: this.socketService.socketId, roomId: this.roomId });
       }, timer);
     }
   }
 
   async createRoom() {
     if (this.roomId && this.playerName && this.mode) {
-      this.roomService.createRoom(this.roomId, this.playerName, this.mode)
-        .then(res => {
-          this.toastService.createMessage('success', res);
-          this.roomService.goToGame();
-        })
-        .catch(err => {
-          this.toastService.createMessage('error', err);
-          this.roomId = '';
-          this.playerName = '';
-          this.verifRoomId();
-          this.verifPlayerName();
-        });
+      this.socket.emit('createRoom',
+        { roomId: this.roomId, playerName: this.playerName, mode: this.mode, id: this.socketService.socketId });
     }
   }
 

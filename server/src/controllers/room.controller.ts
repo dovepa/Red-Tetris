@@ -6,115 +6,111 @@ import { Game } from '../models/game.model';
 export const roomList: Piece[] = [];
 export const playerList: Player[] = [];
 
-export const currentRoom = (roomId) => {
-    const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
-    if (indexRoom === -1)
-        return undefined;
-    else
-        return roomList[indexRoom];
-};
-
-export const getAllRooms = async(req, res) => {
-    res.status(200).json(roomList.filter(r => { return r.isDeleted !== true; }));
-};
 
 
-export const getRoom = async(req, res) => {
-    const id = req.body;
-    if (!id)
-        res.status(202).json({ error: 'Bad Request.' });
-    roomList.forEach(room => {
-        if (room.id === id && !room.isDeleted)
-            return res.status(200).json(room);
+export const testIfRoomIdIsFree = async(roomId) => {
+    return new Promise((resolve, reject) => {
+        let status = false;
+        if (roomId)
+            status = roomList.filter(r => { return r.isDeleted !== true; }).every((room) => { return (room.id !== roomId && !room.isDeleted); });
+        resolve(status);
     });
-    res.status(202).json({ error: 'Room not found.' });
 };
 
-export const createRoom = async(req, res) => {
-    const room = req.body;
-    if (!room || !room.roomId || regex.test(room.roomId) === false || !room.mode
-        || !room.playerName || regex.test(room.playerName) === false || !room.socketId)
-        res.status(202).json({ error: 'Bad format room 😢' });
-    else if (!roomList.filter(r => { return r.isDeleted !== true; }).every((r) => { return (r.id !== room.roomId && !room.isDeleted); }))
-        res.status(202).json({ error: 'Room already exist 😢' });
-    else {
-        const newRoom = new Piece(room.roomId, room.mode === 'solo' ? 0 : 1);
-        newRoom.masterName = room.playerName;
-        newRoom.masterId = room.socketId;
-        newRoom.playersId = [room.socketId];
-        newRoom.pause = false;
-        newRoom.isPlaying = false;
-        roomList.push(newRoom);
-        const newPlayer = new Player(newRoom.id, room.playerName, room.socketId);
-        playerList.push(newPlayer);
-        req.app.io.emit('updatePlayer', { player: newPlayer, room: newRoom });
-        req.app.io.emit('updateRoom', { room: newRoom });
-        res.status(200).json({ success: 'Room created successfully 😃', room: newRoom, player: newPlayer });
-    }
-};
-
-export const getAllPlayerScores = async(req, res) => {
-    return res.status(200).json(playerList);
-};
-
-export const testIfRoomIdIsFree = async(req, res) => {
-    const data = req.body;
-    let status = false;
-    if (data.name)
-        status = roomList.filter(r => { return r.isDeleted !== true; }).every((room) => { return (room.id !== data.name && !room.isDeleted); });
-    res.status(200).json(status);
-};
-
-export const testIfPlayerNameIsFree = async(req, res) => {
-    const data = req.body;
-    let status = true;
-    if (data.playerName) {
-        const indexRoom = roomList.findIndex(room => { return (room.id === data.roomId && !room.isDeleted); });
-        if (indexRoom === -1)
-            return res.status(202).json({ error: 'Room not found 😢' });
-        status = playerList.filter(p => { return p.isDeleted !== true; }).every(player => {
-            if (regex.test(data.playerName) === false
-                || roomList[indexRoom].playersId.includes(player.id)
-                && data.playerName === player.name) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-        res.status(200).json({ status, isPlaying: roomList[indexRoom].isPlaying });
-    }
-    else
-        res.status(400);
-};
-
-export const createPlayer = async(req, res) => {
-    const data = req.body;
-    if (!data || !data.roomId || !data.playerName || !data.socketId)
-        res.status(202).json({ error: 'Bad format 😢' });
-    else {
-        const indexRoom = roomList.findIndex(room => { return (room.id === data.roomId && !room.isDeleted); });
-        if (indexRoom === -1)
-            return res.status(202).json({ error: 'Room not found 😢' });
-        const status = playerList.filter(p => { return p.isDeleted !== true; }).every(player => {
-            if (roomList[indexRoom].playersId.includes(player.id) && data.playerName === player.name) {
-                return false;
-            } else {
-                return true;
-            }
-        });
-        if (status === true) {
-            const newPlayer = new Player(data.roomId, data.playerName, data.socketId);
-            roomList[indexRoom].playersId.push(newPlayer.id);
-            playerList.push(newPlayer);
-            req.app.io.emit('updatePlayer', { player: newPlayer, room: roomList[indexRoom] });
-            req.app.io.emit('updateRoom', { room: roomList[indexRoom] });
-            return res.status(200).json({ success: 'Player created successfully 😃', player: newPlayer, room: roomList[indexRoom] });
-        } else {
-            return res.status(202).json({ error: 'Sorry, player name already used. 😢' });
+export const testIfPlayerNameIsFree = (data) => {
+    return new Promise((resolve, reject) => {
+        let status = true;
+        if (data.playerName) {
+            const indexRoom = roomList.findIndex(room => { return (room.id === data.roomId && !room.isDeleted); });
+            if (indexRoom === -1)
+                return reject({ error: 'Room not found 😢' });
+            status = playerList.filter(p => { return p.isDeleted !== true; }).every(player => {
+                if (regex.test(data.playerName) === false
+                    || roomList[indexRoom].playersId.includes(player.id)
+                    && data.playerName === player.name) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            resolve({ status, isPlaying: roomList[indexRoom].isPlaying });
         }
-    }
+    });
 };
 
+export const createPlayer = async(data) => {
+    return new Promise((resolve, reject) => {
+        if (!data || !data.roomId || !data.playerName || !data.id)
+            reject({ error: 'Bad format 😢' });
+        else {
+            const indexRoom = roomList.findIndex(room => { return (room.id === data.roomId && !room.isDeleted); });
+            if (indexRoom === -1)
+                reject({ error: 'Room not found 😢' });
+            const status = playerList.filter(p => { return p.isDeleted !== true; }).every(player => {
+                if (roomList[indexRoom].playersId.includes(player.id) && data.playerName === player.name) {
+                    return false;
+                } else {
+                    return true;
+                }
+            });
+            if (status === true) {
+                const newPlayer = new Player(data.roomId, data.playerName, data.id);
+                roomList[indexRoom].playersId.push(newPlayer.id);
+                playerList.push(newPlayer);
+                return resolve({ success: 'Player created successfully 😃', player: newPlayer, room: roomList[indexRoom] });
+            } else {
+                return reject({ error: 'Sorry, player name already used. 😢' });
+            }
+        }
+    });
+};
+
+
+export const getPlayerIds = async(ids) => {
+    return new Promise((resolve, reject) => {
+        if (!ids)
+            reject({ error: 'Bad Request.' });
+        const playerTmp: Player[] = [];
+        ids.forEach(id => {
+            playerList.forEach(player => {
+                if (player.id === id && !player.isDeleted) {
+                    playerTmp.push(player);
+                }
+            });
+        });
+        if (playerTmp)
+            return resolve(playerTmp);
+        else
+            return resolve({ error: 'Player not found.' });
+    });
+
+};
+
+export const deletePlayerId = async(req, res) => {
+    return new Promise((resolve, reject) => {
+        const id = req.body.socketId;
+        if (!id)
+            res.status(202).json({ error: 'Bad Request.' });
+        deletePlayer(id).then((response: Piece[]) => {
+            response.forEach(resRoom => {
+                req.app.io.emit('updateRoom', { room: resRoom });
+            });
+            return res.status(200).json(response);
+        }).catch(err => {
+            return res.status(202).json(err);
+        });
+    });
+
+};
+
+// get all players score
+export const getAllPlayerScores = () => {
+    return new Promise((resolve, reject) => {
+        return resolve(playerList);
+    });
+};
+
+// Delete Player by socket
 export const deletePlayer = (socketId: string) => {
     return new Promise((resolve, reject) => {
         const roomListTmp: Piece[] = [];
@@ -179,34 +175,42 @@ export const deletePlayer = (socketId: string) => {
     });
 };
 
-export const getPlayerIds = async(req, res) => {
-    const ids = req.body.ids;
-    if (!ids)
-        res.status(202).json({ error: 'Bad Request.' });
-    const playerTmp: Player[] = [];
-    ids.forEach(id => {
-        playerList.forEach(player => {
-            if (player.id === id && !player.isDeleted) {
-                playerTmp.push(player);
-            }
-        });
-    });
-    if (playerTmp)
-        return res.status(200).json(playerTmp);
+// Get current Room for diff state
+export const currentRoom = (roomId) => {
+    const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
+    if (indexRoom === -1)
+        return undefined;
     else
-        return res.status(202).json({ error: 'Player not found.' });
+        return roomList[indexRoom];
 };
 
-export const deletePlayerId = async(req, res) => {
-    const id = req.body.socketId;
-    if (!id)
-        res.status(202).json({ error: 'Bad Request.' });
-    deletePlayer(id).then((response: Piece[]) => {
-        response.forEach(resRoom => {
-            req.app.io.emit('updateRoom', { room: resRoom });
-        });
-        return res.status(200).json(response);
-    }).catch(err => {
-        return res.status(202).json(err);
+// Get all rooms list
+export const getAllRooms = () => {
+    return new Promise((resolve, reject) => {
+        resolve(roomList.filter(r => { return r.isDeleted !== true; }));
     });
 };
+
+// create a new room
+export const createRoom = async(room) => {
+    return new Promise((resolve, reject) => {
+        if (!room || !room.roomId || regex.test(room.roomId) === false || !room.mode
+            || !room.playerName || regex.test(room.playerName) === false || !room.id)
+            reject({ error: 'Bad format room 😢' });
+        else if (!roomList.filter(r => { return r.isDeleted !== true; }).every((r) => { return (r.id !== room.roomId && !room.isDeleted); }))
+            reject({ error: 'Room already exist 😢' });
+        else {
+            const newRoom = new Piece(room.roomId, room.mode === 'solo' ? 0 : 1);
+            newRoom.masterName = room.playerName;
+            newRoom.masterId = room.id;
+            newRoom.playersId = [room.id];
+            newRoom.pause = false;
+            newRoom.isPlaying = false;
+            roomList.push(newRoom);
+            const newPlayer = new Player(newRoom.id, room.playerName, room.id);
+            playerList.push(newPlayer);
+            resolve({ success: 'Room created successfully 😃', room: newRoom, player: newPlayer });
+        }
+    });
+};
+

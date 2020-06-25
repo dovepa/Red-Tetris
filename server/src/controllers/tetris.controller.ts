@@ -4,6 +4,7 @@ import { Player } from '../models/player.model';
 import { Game } from '../models/game.model';
 import { Piece } from '../models/piece.model';
 
+// Update Server for player data
 export const updatePlayerServer = (updatePlayer: Player) => {
     return new Promise((resolve, reject) => {
         const indexPlayer = playerList.findIndex(player => { return (player.id === updatePlayer.id && !player.isDeleted); });
@@ -16,11 +17,10 @@ export const updatePlayerServer = (updatePlayer: Player) => {
         playerList[indexPlayer].game = updatePlayer.game;
         playerList[indexPlayer].scores = updatePlayer.scores;
         resolve({ room: roomList[indexRoom], player: playerList[indexPlayer] });
-
     });
 };
 
-
+// create a new tetromino list for room
 export const createTetromino = (room: Piece) => {
     return new Promise((resolve, reject) => {
         const tetrominoList: TetroMino[] = [];
@@ -34,6 +34,7 @@ export const createTetromino = (room: Piece) => {
     });
 };
 
+// Set room to play
 export const playGame = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
@@ -50,6 +51,7 @@ export const playGame = (roomId) => {
     });
 };
 
+// Init player for a new game
 export const initPlayers = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
@@ -69,6 +71,7 @@ export const initPlayers = (roomId) => {
     });
 };
 
+// Pause game
 export const pauseGame = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
@@ -81,6 +84,7 @@ export const pauseGame = (roomId) => {
     });
 };
 
+// Resume game
 export const resumeGame = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
@@ -93,6 +97,7 @@ export const resumeGame = (roomId) => {
     });
 };
 
+// Reset game for players
 export const resetGame = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });

@@ -18,9 +18,9 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
   isWashing = false;
 
   constructor(readonly roomService: RoomService,
-    readonly tetrisService: TetrisService,
-    private readonly socket: Socket,
-    private readonly toastService: ToastService) {
+              readonly tetrisService: TetrisService,
+              private readonly socket: Socket,
+              private readonly toastService: ToastService) {
     this.socket.on('updateTetris', this.updateTetris.bind(this));
   }
 
@@ -53,6 +53,13 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
       if (data.action === 'reset') {
         this.current = undefined;
         this.isWashing = false;
+      }
+      if (data.action === 'newTetro') {
+        if (data.tetrominoList) {
+          data.tetrominoList.forEach(tetro => {
+            this.roomService.currentRoom.tetrominoList.push(tetro);
+          });
+        }
       }
     }
   }

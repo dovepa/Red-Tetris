@@ -18,10 +18,10 @@ import { Piece } from '../model/piece.model';
 export class RoomService {
 
   constructor(private readonly toastService: ToastService,
-    private readonly socketService: SocketService,
-    private modalService: NgbModal,
-    private router: Router,
-    private readonly socket: Socket) {
+              private readonly socketService: SocketService,
+              private modalService: NgbModal,
+              private router: Router,
+              private readonly socket: Socket) {
 
     this.socket.on('updatePlayer', async (data) => {
       if (data && data.player && data.player.id) {
@@ -49,7 +49,7 @@ export class RoomService {
         && data.room.id === this.currentRoom.id) {
         utils.log('Socket :: updateRoom service', data, this.currentRoom);
         this.currentRoom = data.room;
-        this.populatePlayerList();
+        this.socket.emit('getPlayerIdList', { id: this.socketService.socketId, playersId: this.currentRoom.playersId });
       }
     });
 
@@ -66,40 +66,59 @@ export class RoomService {
         }
       }
     });
+
+    this.socket.on('resCreateRoom', async (data) => {
+      if (data && data.success) {
+        this.currentPlayer = data.player;
+        this.currentRoom = data.room;
+        this.socket.emit('getPlayerIdList', { id: this.socketService.socketId, playersId: this.currentRoom.playersId });
+        this.selectedRoomId = undefined;
+        this.toastService.createMessage('success', data.success);
+        this.goToGame();
+      }
+    });
+
+    this.socket.on('resCreatePlayer', async (data) => {
+      if (data.success && data.player) {
+        this.currentPlayer = data.player;
+        this.currentRoom = data.room;
+        this.socket.emit('getPlayerIdList', { id: this.socketService.socketId, playersId: this.currentRoom.playersId });
+        this.selectedRoomId = undefined;
+        this.toastService.createMessage('success', data.success);
+        this.goToGame();
+      }
+    });
+
+
+
+    this.socket.on('resGetPlayerIdList', async (data) => {
+      if (data && data.list) {
+        this.currentPlayerList = [];
+        let scores: Player[] = [];
+        scores = data.list;
+        if (scores) {
+          scores.sort((a, b) => b.game.score - a.game.score);
+        }
+        this.currentPlayerList = scores;
+        if (this.currentRoom) {
+          this.currentPlayerList.forEach(p => {
+            if (p.game.isWinner) {
+              this.currentRoom.isPlaying = false;
+              this.editRoomAdmin();
+            }
+          });
+        }
+      }
+    });
+
+
+
   }
+
   public selectedRoomId: string;
   public currentRoom: Piece;
   public currentPlayer: Player;
   public currentPlayerList: Player[];
-
-  async populatePlayerList() {
-    this.currentPlayerList = [];
-    return this.getPlayerList().then(res => {
-      this.currentPlayerList = res;
-      if (this.currentRoom) {
-        this.currentPlayerList.forEach(p => {
-          if (p.game.isWinner) {
-            this.currentRoom.isPlaying = false;
-            this.editRoomAdmin();
-          }
-        });
-      }
-    });
-  }
-
-  getPlayerList(): Promise<Player[]> {
-    return new Promise((resolve, reject) => {
-      return axios.post(utils.apiUrl('room', 'getPlayerIdList'), { ids: this.currentRoom.playersId })
-        .then((res) => {
-          let scores: Player[] = [];
-          scores = res.data;
-          if (scores) {
-            scores.sort((a, b) => b.game.score - a.game.score);
-          }
-          resolve(scores);
-        });
-    });
-  }
 
 
 
@@ -111,127 +130,16 @@ export class RoomService {
   async resetAll() {
     utils.log('Reset all', this.currentPlayer, this.socketService.socketId);
     if (this.currentPlayer) {
-      await axios.post(utils.apiUrl('room', 'deletePlayer'), { socketId: this.currentPlayer.id })
-        .then((res) => {
-          if (res.data.error) {
-            utils.error(res.data.error);
-          } else {
-            utils.log('reset all res', res.data);
-          }
-        })
-        .catch((err) => { utils.error(err); });
+      this.socket.emit('deletePlayer', { id: this.currentPlayer.id });
+      this.selectedRoomId = undefined;
+      this.currentRoom = undefined;
+      this.currentPlayer = undefined;
     }
-    this.selectedRoomId = undefined;
-    this.currentRoom = undefined;
-    this.currentPlayer = undefined;
   }
-
 
   editRoomAdmin() {
     this.socket.emit('updateRoomServer', this.currentRoom);
   }
 
-  async testIfRoomIdIsFree(name: string): Promise<boolean> {
-    let status = false;
-    await axios.post(utils.apiUrl('room', 'testRoom'), { name })
-      .then((res) => {
-        status = res.data;
-      });
-    return status;
-  }
 
-  testIfPlayerNameIsFree(playerName: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      return axios.post(utils.apiUrl('room', 'testPlayer'), { playerName, roomId: this.selectedRoomId })
-        .then((res) => {
-          if (res.data.error) {
-            reject(res.data.error);
-          } else {
-            resolve(res.data);
-          }
-        })
-        .catch((err) => { reject(err); });
-    });
-  }
-
-
-
-  async getAllRooms(): Promise<Piece[]> {
-    let list: Piece[] = [];
-    await axios.get(utils.apiUrl('room', 'getAllRooms'))
-      .then((res) => {
-        if (res.data) {
-          list = res.data;
-        }
-      });
-    return list;
-  }
-
-  createRoom(roomId, playerName, mode): Promise<string> {
-    return new Promise((resolve, reject) => {
-      return axios.post(utils.apiUrl('room', 'createRoom'), { roomId, playerName, mode, socketId: this.socketService.socketId })
-        .then(async (res) => {
-          if (res.data.success) {
-            this.currentPlayer = res.data.player;
-            this.currentRoom = res.data.room;
-            this.populatePlayerList();
-            this.selectedRoomId = undefined;
-            resolve(res.data.success);
-          }
-          else if (res.data.error) {
-            reject(res.data.error);
-          }
-        })
-        .catch((err) => { reject(err); });
-    });
-  }
-
-  createPlayer(playerName): Promise<string> {
-    return new Promise((resolve, reject) => {
-      return axios.post(utils.apiUrl('room', 'createPlayer'),
-        { roomId: this.selectedRoomId, playerName, socketId: this.socketService.socketId })
-        .then(async (res) => {
-          if (res.data.success && res.data.player) {
-            this.currentPlayer = res.data.player;
-            this.currentRoom = res.data.room;
-            this.populatePlayerList();
-            this.selectedRoomId = undefined;
-            resolve(res.data.success);
-          }
-          else if (res.data.error) {
-            reject(res.data.error);
-          }
-        })
-        .catch((err) => { reject(err); });
-    });
-  }
-
-  async getRoom(id: string): Promise<Piece> {
-    let room: Piece;
-    await axios.post(utils.apiUrl('room', 'getRoomId'), { id })
-      .then((res) => {
-        room = res.data;
-      });
-    return room;
-  }
-
-  getPlayerListScore(): Promise<Score[]> {
-    return new Promise((resolve, reject) => {
-      return axios.get(utils.apiUrl('room', 'getAllScores'))
-        .then((res: any) => {
-          const scoreList: Score[] = [];
-          if (res && res.data) {
-            res.data.forEach((player: Player) => {
-              if (player.scores) {
-                player.scores.forEach(scoreInfo => {
-                  scoreList.push({ name: player.name, roomId: player.roomId, score: scoreInfo.score, date: scoreInfo.date });
-                });
-              }
-            });
-          }
-          scoreList.sort((a, b) => b.score - a.score);
-          resolve(scoreList);
-        });
-    });
-  }
 }

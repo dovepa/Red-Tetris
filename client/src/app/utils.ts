@@ -15,15 +15,6 @@ export const urlServer = (): string => {
     return url;
 };
 
-export const apiUrl = (...args: string[]): string => {
-    let url = urlServer();
-    url = url.concat('/api');
-    args.forEach(path => {
-        url = url.concat('/' + path);
-    });
-    return url;
-};
-
 export const stopAll = (event: Event): void => {
     event.preventDefault();
     event.stopPropagation();

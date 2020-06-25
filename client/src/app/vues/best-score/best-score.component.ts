@@ -1,8 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import * as utils from '../../utils';
-import { Score } from 'src/app/model/player.model';
+import { Player, Score } from 'src/app/model/player.model';
 import { Socket } from 'ngx-socket-io';
 import { RoomService } from 'src/app/service/room.service';
+import { Subscription } from 'rxjs';
+import { SocketService } from 'src/app/service/socket.service';
 
 @Component({
   selector: 'app-best-score',
@@ -11,30 +13,46 @@ import { RoomService } from 'src/app/service/room.service';
 })
 export class BestScoreComponent implements OnInit, OnDestroy {
 
-  sum: number;
-  listPlayers: Score[];
+  sum = 0;
+  listPlayers: Score[] = [];
   arrayTmp: Score[] = [];
   search: string;
   finalArray: Score[] = [];
   error: boolean;
+  subscription: Subscription;
 
   constructor(private readonly socket: Socket,
-              private readonly roomService: RoomService) {
-    this.socket.on('updatePlayer', this.findPlayersScore.bind(this));
-    this.findPlayersScore();
+              private readonly roomService: RoomService,
+              private readonly socketService: SocketService) {
+
+    this.socket.on('updatePlayer', async () => { this.socket.emit('getAllScores', { id: this.socketService.socketId }); });
+    this.socket.emit('getAllScores', { id: this.socketService.socketId });
+    this.subscription = this.socketService.socketIdSetterObs.subscribe(() => {
+      this.socket.emit('getAllScores', { id: this.socketService.socketId });
+    });
+
+    this.socket.on('resGetAllScores', async (data) => {
+      const scoreList: Score[] = [];
+      if (data && data.list) {
+        data.list.forEach((player: Player) => {
+          if (player.scores) {
+            player.scores.forEach(scoreInfo => {
+              scoreList.push({ name: player.name, roomId: player.roomId, score: scoreInfo.score, date: scoreInfo.date });
+            });
+          }
+        });
+      }
+      scoreList.sort((a, b) => b.score - a.score);
+      this.sum = 0;
+      this.listPlayers = scoreList;
+      this.arrayTmp = scoreList;
+      this.appendItems();
+    });
+
   }
 
   ngOnDestroy() {
-    this.socket.removeListener('updatePlayer', this.findPlayersScore.bind(this));
-  }
-
-  findPlayersScore() {
-    this.roomService.getPlayerListScore().then((res: Score[]) => {
-      this.sum = 0;
-      this.listPlayers = res;
-      this.arrayTmp = res;
-      this.appendItems();
-    });
+    if (this.subscription) { this.subscription.unsubscribe(); }
   }
 
   async searchPlayer() {
