@@ -23,7 +23,21 @@ export class RoomService {
               private router: Router,
               private readonly socket: Socket) {
 
-    this.socket.on('updatePlayer', async (data) => {
+    this.socket.on('updatePlayer', async (data: { room: Piece, player: Player }) => {
+      if (data && data.player && data.player.id) {
+        if (this.currentRoom && this.currentPlayerList && this.currentRoom.id && this.currentRoom.playersId
+          && this.currentRoom.playersId.includes(data.player.id)) {
+          const index = this.currentPlayerList.findIndex(player => player.id === data.player.id);
+          if (index === -1) {
+            utils.error('No player index...', data.player);
+          } else {
+            this.currentPlayerList[index] = data.player;
+          }
+        }
+      }
+    });
+
+    this.socket.on('updatePlayerCurrent', async (data: { room: Piece, player: Player }) => {
       if (data && data.player && data.player.id) {
         if (this.currentRoom && this.currentPlayerList && this.currentRoom.id && this.currentRoom.playersId
           && this.currentRoom.playersId.includes(data.player.id)) {

@@ -54,7 +54,8 @@ const socketController = (io) => {
 
         socket.on('deletePlayer', async(data: { id: string }) => {
             if (data && data.id) {
-                roomCtrl.deletePlayer(data.id);
+                roomCtrl.deletePlayer(data.id)
+                    .then((res: Piece[]) => { res.forEach(roomRes => { io.emit('updateRoom', { room: roomRes }); }); });
                 io.emit('updateRoom');
             }
         });
@@ -98,7 +99,7 @@ const socketController = (io) => {
                                 io.emit('updateRoom', { room: res.room });
                             if (res.playerList)
                                 res.playerList.forEach(p => {
-                                    io.emit('updatePlayer', { player: p, room: res.room });
+                                    io.emit('updatePlayerCurrent', { player: p, room: res.room });
                                 });
                             io.emit('updateTetris', { action: 'play', room: res.room, tetrominoList: res.tetrominoList });
                         }).catch(err => {

@@ -14,8 +14,8 @@ export const updatePlayerServer = (updatePlayer: Player) => {
         if (indexPlayer === -1)
             reject({ error: 'No player found...' });
 
-        playerList[indexPlayer].game = updatePlayer.game;
         playerList[indexPlayer].scores = updatePlayer.scores;
+        playerList[indexPlayer].game = updatePlayer.game;
         resolve({ room: roomList[indexRoom], player: playerList[indexPlayer] });
     });
 };

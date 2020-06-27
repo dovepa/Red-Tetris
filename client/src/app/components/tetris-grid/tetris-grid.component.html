@@ -72,8 +72,8 @@
 
     <!-- Game Board  -->
     <div class="col animate__animated animate__fadeInDownBig" style="min-width: 340px;">
-        <div *ngIf="!roomService.currentRoom.pause && !roomService.currentPlayer.game.isPlaying "
-            class="card border-success mb-3 centerDW centerH" style="width: 302px; height: 602px;">
+        <div *ngIf="!roomService.currentPlayer.game.isPlaying " class="card border-success mb-3 centerDW centerH"
+            style="width: 302px; height: 602px;">
             <p class="centerDW centerH"
                 *ngIf="roomService.currentPlayer.game.endGame && roomService.currentPlayer.game.isWinner">
                 🎉🎉🎉 You Win 🎉🎉🎉</p>
@@ -139,10 +139,10 @@
                 <div class="list-group-item" [ngClass]="{'silver': player.id === roomService.currentPlayer.id}"
                     *ngFor="let player of roomService.currentPlayerList">
                     <div class="row">
-                        <div class="centerW col-4">
+                        <div class="centerW col">
                             {{player.name}}</div>
-                        <div class="centerW col-2">
-                            {{player.game.score}}</div>
+                        <div class="centerW col">{{player.game.score}}</div>
+                        <div class="col-6" *ngIf="player.id === roomService.currentPlayer.id"></div>
                         <div class="col-6" *ngIf="player.id !== roomService.currentPlayer.id">
                             <div *ngIf="roomService.currentRoom.isPlaying && player.game.spectrum && !player.game.endGame "
                                 class="card border-success mb-3 centerDW" style="width: 102px; height: 202px;">
