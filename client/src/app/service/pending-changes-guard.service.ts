@@ -15,7 +15,6 @@ export class PendingChangesGuardService implements OnDestroy {
 
 
   constructor(private modalService: NgbModal,
-              private readonly socket: Socket,
               private readonly roomService: RoomService) { }
 
 

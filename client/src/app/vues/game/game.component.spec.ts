@@ -1,6 +1,10 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { GameComponent } from './game.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { environment } from 'src/environments/environment';
+const config: SocketIoConfig = { url: environment.serverAdress + environment.serverPort, options: {} };
 
 describe('GameComponent', () => {
   let component: GameComponent;
@@ -8,9 +12,13 @@ describe('GameComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ GameComponent ]
+      imports: [
+        SocketIoModule.forRoot(config),
+        RouterTestingModule,
+      ],
+      declarations: [GameComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

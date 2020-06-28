@@ -18,7 +18,7 @@ import { ModePipe } from './pipes/mode.pipe';
 import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
 import { CreateRoomComponent } from './components/create-room/create-room.component';
 import { CreatePlayerComponent } from './components/create-player/create-player.component';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModule, NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ModalComponent } from './components/modal/modal.component';
 import { CreateComponent } from './vues/create/create.component';
 import { GameComponent } from './vues/game/game.component';
@@ -58,6 +58,7 @@ export class MyHammerConfig extends HammerGestureConfig {
   ],
   imports: [
     BrowserModule,
+    SocketIoModule.forRoot(config),
     BrowserAnimationsModule,
     HammerModule,
     AppRoutingModule,
@@ -65,13 +66,14 @@ export class MyHammerConfig extends HammerGestureConfig {
     FormsModule,
     InfiniteScrollModule,
     NgbModule,
-    SocketIoModule.forRoot(config),
   ],
-  providers: [{ provide: UrlSerializer, useClass: CustomUrlSerializer },
-  {
-    provide: HAMMER_GESTURE_CONFIG,
-    useClass: MyHammerConfig,
-  }
+  providers: [
+    NgbActiveModal,
+    { provide: UrlSerializer, useClass: CustomUrlSerializer },
+    {
+      provide: HAMMER_GESTURE_CONFIG,
+      useClass: MyHammerConfig,
+    }
   ],
   bootstrap: [AppComponent]
 })

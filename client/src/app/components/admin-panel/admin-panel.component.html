@@ -1,5 +1,5 @@
-<div *ngIf="roomService.currentRoom.isPlaying" class="btn-group btn-group-toggle" style="width: 100%; height: 100%;"
-    data-toggle="buttons">
+<div *ngIf="roomService && roomService.currentRoom && roomService.currentRoom.isPlaying"
+    class="btn-group btn-group-toggle" style="width: 100%; height: 100%;" data-toggle="buttons">
     <label class="btn btn-info" [ngClass]="{'active': roomService.currentRoom.pause}">
         <input *ngIf="!roomService.currentRoom.pause" type="radio" autocomplete="off" (click)="setPause(true)">
         Pause
@@ -9,5 +9,5 @@
         Resume
     </label>
 </div>
-<button *ngIf="!roomService.currentRoom.isPlaying" type="button" class="btn btn-success  btn-lg btn-block"
-    (click)='play()'>Play</button>
+<button *ngIf="roomService && roomService.currentRoom && roomService.currentRoom.isPlaying === false" type="button"
+    class="btn btn-success  btn-lg btn-block" (click)='play()'>Play</button>

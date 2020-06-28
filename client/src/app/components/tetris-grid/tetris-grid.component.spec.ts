@@ -2,15 +2,24 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TetrisGridComponent } from './tetris-grid.component';
 
+import { RouterTestingModule } from '@angular/router/testing';
+import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
+import { environment } from 'src/environments/environment';
+const config: SocketIoConfig = { url: environment.serverAdress + environment.serverPort, options: {} };
+
 describe('TetrisGridComponent', () => {
   let component: TetrisGridComponent;
   let fixture: ComponentFixture<TetrisGridComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ TetrisGridComponent ]
+      imports: [
+        SocketIoModule.forRoot(config),
+        RouterTestingModule,
+      ],
+      declarations: [TetrisGridComponent]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {
