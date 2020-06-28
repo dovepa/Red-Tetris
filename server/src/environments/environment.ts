@@ -9,11 +9,10 @@ const environmentDev = {
 };
 
 let environmentSwitch;
-if (process.env.heroku) {
+if (process.env.heroku || process.env.PROD) {
   environmentSwitch = environmentProd;
 } else {
   environmentSwitch = environmentDev;
 }
 
-environmentSwitch = environmentProd;
 export const environment = environmentSwitch;
