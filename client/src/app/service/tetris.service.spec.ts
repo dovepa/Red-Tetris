@@ -39,13 +39,10 @@ describe('TetrisService', () => {
   });
 
   it('should be return game', () => {
-    console.log('game', testgrid);
     expect(testgrid).toBeInstanceOf(Game);
   });
 
   it('should be return lastY', () => {
-
-    console.log('game', testgrid);
     expect(testgrid).toBeInstanceOf(Game);
   });
 
