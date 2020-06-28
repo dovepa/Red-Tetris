@@ -10,6 +10,7 @@ export class TetrisService {
   ghost = 80;
   watermark = 90;
   destroy = 120;
+  unDestroy = 400;
 
   constructor() { }
 
@@ -37,7 +38,9 @@ export class TetrisService {
 
   returnColor(cube: number): string {
     let color = '';
-    if (cube > this.destroy) {
+    if (cube === this.unDestroy) {
+      return 'type400';
+    } else if (cube > this.destroy) {
       cube = cube - this.destroy;
       color = color.concat('animate__animated animate__bounceOut ');
     } else if (cube - this.watermark > 0) {

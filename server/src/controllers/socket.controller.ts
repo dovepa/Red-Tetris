@@ -80,6 +80,10 @@ const socketController = (io) => {
          * Tetromino controllers Functions :
          */
 
+        socket.on('newUndestryRow', async(data) => {
+            io.emit('addUndestroyRow', data);
+        });
+
         socket.on('updatePlayerServer', async(data: { player: Player, room: Piece }) => {
             tetrisCtrl.updatePlayerServer(data.player).then((res: { player: Player, room: Piece }) => {
                 return io.emit('updatePlayer', res);
