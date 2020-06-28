@@ -43,8 +43,20 @@ describe('TetrisService', () => {
   });
 
   it('should be return lastY', () => {
-    expect(testgrid).toBeInstanceOf(Game);
+    tetro.position.ymax = service.lastYValidPlace(tetro, testgrid);
+    expect(tetro.position.ymax).toEqual(testgrid.shape.length - 2);
   });
+
+  it('should  draw Tetromino into grid', () => {
+    service.draw(testgrid, tetro);
+    expect(testgrid.shape.every(row => row.every(cube => cube === 0) === true)).toBeFalse();
+  });
+
+  it('should be return False for valid place on 10', () => {
+    const validplace = service.isValidPlace(tetro.shape, tetro.sign, testgrid, 10, tetro.position.ymax);
+    expect(validplace).toBeFalse();
+  });
+
 
 
 });
