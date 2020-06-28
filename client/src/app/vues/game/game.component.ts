@@ -5,6 +5,8 @@ import * as utils from '../../utils';
 import { ToastService } from 'src/app/service/toast.service';
 import { Socket } from 'ngx-socket-io';
 import { SocketService } from 'src/app/service/socket.service';
+import { Piece } from 'src/app/model/piece.model';
+import { Player } from 'src/app/model/player.model';
 
 @Component({
   selector: 'app-game',
@@ -29,6 +31,17 @@ export class GameComponent implements OnInit {
               private readonly socketService: SocketService,
               private readonly socket: Socket,
               private readonly router: Router) {
+
+    this.socket.on('destroyPlayer', (data: { room: Piece, player: Player }) => {
+      if (data && data.room && data.room.id === this.roomService.currentRoom.id
+        && data.player && data.player.id === this.roomService.currentPlayer.id) {
+        if (this.socketService.socketId !== this.roomService.currentPlayer.id) {
+          this.changeGuard(true, true);
+          this.router.navigate(['room']);
+          this.toastService.createMessage('error', 'Error on socket 😞');
+        }
+      }
+    });
   }
 
 

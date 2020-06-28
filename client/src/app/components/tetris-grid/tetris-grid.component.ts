@@ -180,8 +180,6 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
     if (!this.current || this.roomService.currentRoom.isPlaying !== true || this.roomService.currentRoom.pause || this.isWashing) {
       return;
     }
-
-    utils.log(this.roomService.currentPlayer.game.shape);
     switch (where) {
       case 'up':
         this.tetrisService.erase(this.roomService.currentPlayer.game, this.current);

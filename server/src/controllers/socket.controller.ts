@@ -83,7 +83,10 @@ const socketController = (io) => {
         socket.on('updatePlayerServer', async(data: { player: Player, room: Piece }) => {
             tetrisCtrl.updatePlayerServer(data.player).then((res: { player: Player, room: Piece }) => {
                 return io.emit('updatePlayer', res);
-            }).catch(err => utils.error(err));
+            }).catch(err => {
+                io.emit('destroyPlayer', data);
+                utils.error(err);
+            });
         });
 
         socket.on('updateRoomServer', async(room: Piece) => {

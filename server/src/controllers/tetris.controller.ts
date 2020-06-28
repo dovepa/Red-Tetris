@@ -10,7 +10,7 @@ export const updatePlayerServer = (updatePlayer: Player) => {
         const indexPlayer = playerList.findIndex(player => { return (player.id === updatePlayer.id && !player.isDeleted); });
         const indexRoom = roomList.findIndex(room => { return (updatePlayer.roomId === room.id && !room.isDeleted); });
         if (indexRoom === -1)
-            reject({ error: 'No room found...' });
+            reject({ error: 'No room found...', num: 1 });
         if (indexPlayer === -1)
             reject({ error: 'No player found...' });
 
@@ -39,7 +39,7 @@ export const playGame = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
         if (indexRoom === -1)
-            reject({ error: 'No room found...' });
+            reject({ error: 'No room found...', num: 2 });
         else {
             roomList[indexRoom].isPlaying = true;
             initPlayers(roomId).then(plTmp => {
@@ -56,7 +56,7 @@ export const initPlayers = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
         if (indexRoom === -1)
-            reject({ error: 'No room found...' });
+            reject({ error: 'No room found...', num: 3 });
         else {
             const playerListTmp: Player[] = [];
             roomList[indexRoom].playersId.forEach(id => {
@@ -76,7 +76,7 @@ export const pauseGame = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
         if (indexRoom === -1)
-            reject({ error: 'No room found...' });
+            reject({ error: 'No room found...', num: 4 });
         else {
             roomList[indexRoom].pause = true;
             resolve({ room: roomList[indexRoom] });
@@ -102,7 +102,7 @@ export const resetGame = (roomId) => {
     return new Promise((resolve, reject) => {
         const indexRoom = roomList.findIndex(room => { return (roomId === room.id && !room.isDeleted); });
         if (indexRoom === -1)
-            reject({ error: 'No room found...' });
+            reject({ error: 'No room found...', num: 5 });
         else {
             roomList[indexRoom].isPlaying = false;
             roomList[indexRoom].pause = false;
