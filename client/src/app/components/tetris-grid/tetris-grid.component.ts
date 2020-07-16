@@ -16,11 +16,12 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
   timerEvent: number | undefined;
   current: TetroMino;
   isWashing = false;
+  malusgrid = 0;
 
   constructor(readonly roomService: RoomService,
-              readonly tetrisService: TetrisService,
-              private readonly socket: Socket,
-              private readonly toastService: ToastService) {
+    readonly tetrisService: TetrisService,
+    private readonly socket: Socket,
+    private readonly toastService: ToastService) {
     this.socket.on('updateTetris', this.updateTetris.bind(this));
     this.socket.on('addUndestroyRow', async (data) => {
       if (data && data.room && data.player) {
@@ -28,10 +29,7 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
           && data.room.id === this.roomService.currentRoom.id
           && this.roomService.currentPlayer.game.endGame === false
           && this.roomService.currentPlayer.game.isPlaying === true) {
-          window.clearInterval(this.timerEvent);
-          this.roomService.currentPlayer.game.shape.splice(0, 1);
-          this.roomService.currentPlayer.game.shape.push([400, 400, 400, 400, 400, 400, 400, 400, 400, 400]);
-          this.timerInterval();
+          this.malusgrid++;
         }
       }
     });
@@ -148,12 +146,12 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
   async wash() {
     window.clearInterval(this.timerEvent);
     if (!this.roomService.currentPlayer.game.shape.every(row => {
-      return row.every(cube => (cube !== 0 && cube !== this.tetrisService.unDestroy)) === false;
+      return row.every(cube => (cube !== 0)) === false;
     })) {
       this.isWashing = true;
       let lines = 0;
       await this.roomService.currentPlayer.game.shape.forEach(async (row, rowIndex) => {
-        if (row.every(cube => (cube !== 0 && cube !== this.tetrisService.unDestroy))) {
+        if (row.every(cube => (cube !== 0))) {
           lines++;
           for (let index = 0; index < this.roomService.currentPlayer.game.shape[rowIndex].length; index++) {
             this.roomService.currentPlayer.game.shape[rowIndex][index] += this.tetrisService.destroy;
@@ -168,6 +166,19 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
       this.roomService.currentPlayer.game.score += this.tetrisService.scoring(lines);
     }
     this.tetrisService.createSpectrum(this.roomService.currentPlayer);
+
+    // Edit malus grid
+    while (this.malusgrid > 0) {
+      this.roomService.currentPlayer.game.shape.splice(0, 1);
+      let line = []
+      while (line.length < 10) {
+        line.push(this.tetrisService.unDestroy)
+      }
+      line[utils.getRandomInt(10)] = 0
+      this.roomService.currentPlayer.game.shape.push(line);
+      this.malusgrid--;
+    }
+
     this.socket.emit('updatePlayerServer', { player: this.roomService.currentPlayer, room: this.roomService.currentRoom });
     this.isWashing = false;
     this.timerInterval();
