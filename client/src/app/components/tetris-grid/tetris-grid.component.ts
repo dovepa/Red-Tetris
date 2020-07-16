@@ -155,6 +155,7 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
       await this.roomService.currentPlayer.game.shape.forEach(async (row, rowIndex) => {
         if (row.every(cube => (cube !== 0))) {
           let malus = false;
+          // change for malus
           if (row.every(cube => (cube !== 119))) {
             malus = true
             lines++;
