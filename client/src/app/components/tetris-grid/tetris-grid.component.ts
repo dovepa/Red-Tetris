@@ -176,6 +176,7 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
   }
 
   createMalusLines() {
+    // for musti mode 
     while (this.malusgrid > 0) {
       this.roomService.currentPlayer.game.shape.splice(0, 1);
       let line = []
