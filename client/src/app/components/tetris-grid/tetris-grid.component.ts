@@ -89,6 +89,7 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
         this.current.lock = true;
       } else if (this.current.position.y !== this.current.position.ymax) {
         this.current.lock = false;
+        this.createMalusLines()
         this.move('down');
       }
       if (this.current.lock) {
@@ -112,6 +113,7 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
           }
         } else {
           this.current.lock = false;
+          this.createMalusLines()
         }
       }
     }), 650);
@@ -166,8 +168,14 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
       this.roomService.currentPlayer.game.score += this.tetrisService.scoring(lines);
     }
     this.tetrisService.createSpectrum(this.roomService.currentPlayer);
+    this.createMalusLines()
+    this.socket.emit('updatePlayerServer', { player: this.roomService.currentPlayer, room: this.roomService.currentRoom });
+    this.isWashing = false;
+    this.timerInterval();
+    return;
+  }
 
-    // Edit malus grid
+  createMalusLines() {
     while (this.malusgrid > 0) {
       this.roomService.currentPlayer.game.shape.splice(0, 1);
       let line = []
@@ -178,11 +186,6 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
       this.roomService.currentPlayer.game.shape.push(line);
       this.malusgrid--;
     }
-
-    this.socket.emit('updatePlayerServer', { player: this.roomService.currentPlayer, room: this.roomService.currentRoom });
-    this.isWashing = false;
-    this.timerInterval();
-    return;
   }
 
   ngOnDestroy() {
