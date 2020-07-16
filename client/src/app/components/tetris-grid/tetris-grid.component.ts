@@ -154,14 +154,18 @@ export class TetrisGridComponent implements OnInit, OnDestroy {
       let lines = 0;
       await this.roomService.currentPlayer.game.shape.forEach(async (row, rowIndex) => {
         if (row.every(cube => (cube !== 0))) {
+          let malus = false;
+          if (row.every(cube => (cube !== 119)))
+            malus = true
           lines++;
           for (let index = 0; index < this.roomService.currentPlayer.game.shape[rowIndex].length; index++) {
             this.roomService.currentPlayer.game.shape[rowIndex][index] += this.tetrisService.destroy;
           }
           await utils.sleep(650);
           await this.roomService.currentPlayer.game.shape.splice(rowIndex, 1);
-          this.socket.emit('newUndestryRow',
-            { player: this.roomService.currentPlayer, room: this.roomService.currentRoom });
+          if (malus)
+            this.socket.emit('newUndestryRow',
+              { player: this.roomService.currentPlayer, room: this.roomService.currentRoom });
           await this.roomService.currentPlayer.game.shape.unshift([0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
         }
       });
